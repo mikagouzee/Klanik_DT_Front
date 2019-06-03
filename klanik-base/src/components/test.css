@@ -1,0 +1,214 @@
+
+@font-face{
+  font-family:'NewJuneBold';
+  src:url('../assets/fonts/NewJune-Bold.otf');
+}
+
+@font-face {
+font-family: 'Titillium';
+src: url('../assets/fonts/TitilliumWeb-Regular.ttf');
+}
+
+@font-face {
+font-family:'Titillium-title';
+src: url('../assets/fonts/TitilliumWeb-Bold.ttf')
+}
+
+section{
+padding:20px;
+}
+
+.row-competences .section-content{
+display:grid;
+grid-template-columns: 50% 50%;
+grid-template-rows:auto;
+grid-row-gap: 15px;
+grid-column-gap:15px;
+justify-content:stretch;
+align-items:left;
+}
+
+.box-competences{
+grid-column: 1/span 2;
+grid-row: 1;
+
+display:grid;
+grid-template-columns: 50% 50%;
+
+justify-self: stretch;
+}
+
+td.skill {
+  background-color:ghostwhite;
+  padding: 3px;
+  text-align: center;
+}
+
+.skillTable1 {
+  grid-column:1;    
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height:100%;
+  text-align:center;
+}
+
+.skillTable2 {
+  grid-column:2;    
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height:100%;
+  text-align:center;
+}
+
+.section-content{
+margin-left:50px;
+}
+
+.box-languages{
+margin-left:25px;
+grid-column: 1;
+grid-row:2;
+justify-self: stretch;
+
+}
+
+.box-legend{
+grid-column:2;
+grid-row:2;
+}
+
+.CV{
+  /* background-color:ghostwhite; */
+  display:grid;
+  margin:5px;
+  padding:10px;
+  font-family:Titillium
+  /* width:auto; */
+}
+
+.section-title{
+font-family: 'Titillium-Title';
+/* padding-left:5px; */
+display:grid;
+
+grid-template-columns: 5% 95%;
+align-items:center;
+color:white;
+font-style:bold;
+}
+
+.section-title img{
+grid-column:1;
+height: 60px;
+z-index:1;
+}
+
+.section-title h2{
+grid-column:2;
+padding:5px;
+padding-left:10px;
+
+background-color:#4d7dad;
+}
+
+.table-header{
+background-color:#1d3652;
+color:white;
+margin:5px;
+padding:5px;
+font-style: bold;
+}
+
+.container{
+  /* display:flex; */
+  display: grid;
+}
+
+.box-header{
+  /* display:flex;
+  flex-wrap: wrap;
+  justify-content:space-between; */
+  display:inline-grid;
+  grid-template-columns:35% 65%;
+  grid-template-rows:56% 44%;    
+  /*border:1px solid black;*/
+}
+
+.Klanik-logo{
+  grid-column:1;
+  grid-row:1 / span 2;
+  z-index: 1;
+  /* order:1; */    
+  /* border:1px solid black; */
+}
+
+.Klanik-logo img{
+  max-width:400px;
+}
+
+.Klanik-titleBar{
+  grid-column:2;
+  grid-row:2;
+  font-family:NewJuneBold;
+  font-size:50px;
+  background-color:#041d36;
+  color:white;
+  text-align:right;
+  padding:5px;
+}
+
+.box-infos{
+  grid-column:2;
+  grid-row:1;
+  display:grid; 
+  grid-template-columns: 50% 50%;
+  
+  align-content: center;
+  font-family:Titillium-title;
+}
+
+.box-name{
+  grid-column:1;   
+  /* order:1; */
+  align-self:stretch;
+  text-align:center;
+  margin-top:auto;
+  margin-bottom:auto;
+  font-size:150%;
+  /* border:1px solid black; */
+}
+
+.box-summary{
+  grid-column:2;
+  align-self:stretch;
+  font-size:145%
+  /* border:1px solid black; */
+}
+
+.table {
+border-collapse: collapse;
+padding:5px;
+height:100%;
+width:100%;
+text-align:center;
+}
+.table td, .table th {
+border: 1px solid lightgrey;
+width:auto;  
+}
+.table tr:first-child th {
+border-top: 0;
+}
+
+.table tr td:first-child,
+.table tr th:first-child {
+border-left: 0;
+}
+.table tr td:last-child,
+.table tr th:last-child {
+border-right: 0;
+}

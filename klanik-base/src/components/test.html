@@ -1,0 +1,152 @@
+<div class="CV">
+        <section class="box-header">
+            <div class="Klanik-logo">
+                <img src="../assets/pictos/logo1.png" alt="edu-icon" class="logo">
+            </div>
+            
+            <div class="Klanik-titleBar">
+              Klanik Consulting
+            </div>
+            
+            <div class="box-infos">
+              <div class="box-name">{{konsultant.name}} {{konsultant.surname}}</div>
+  
+              <div class="box-summary">
+                {{konsultant.function}}
+                <br>
+                {{mainCompetence}}
+                <br>
+                Available starting {{konsultant.availability.substring(0,10)}}
+              </div>
+            </div>  
+        </section>
+        
+        <section class="row-competences">
+                <div class="section-title">
+                        <img src="../assets/pictos/competence.png" alt="comp-icon" align="top"> <h2> Competences</h2>
+                </div>
+                <div class="section-content">
+                    <div class="box-competences" v-if="firstHalfSkill.length && secondHalfSkill.length">
+
+                      <table class=" skillTable1"> 
+                        <tr v-for="thiscomp in firstHalfSkill" :key="thiscomp.competence.name">
+                          <td class="skill">{{thiscomp.competence.name}}</td>
+                          <td class="skill">{{thiscomp.rating}}</td>
+                        </tr>
+                      </table>
+                      
+                      <table class="skillTable2">
+                          <tr v-for="thatcomp in secondHalfSkill" :key="thatcomp.competence.name">
+                          <td class="skill">{{thatcomp.competence.name}}</td>
+                          <td class="skill">{{thatcomp.rating}}</td>
+                        </tr>
+                      </table>
+
+                      </div>
+
+                    <div class="box-languages">
+                            <!-- <h3> Languages</h3> -->
+                            <table class="table">
+                            <tr v-for="lang in konsultant.languages" :key="lang.language.id">
+                                <td class="table">{{lang.language.name}}</td>
+                                <td class="table">{{lang.fluency}}</td>
+                            </tr>
+                            </table>
+                      </div>
+                
+                    <div class="box-legend">
+                        « I have some competences <br>
+                        «« I know how to do but I need support <br>
+                        ««« Good level <br>
+                        «««« Very good level / mastering the topic <br>
+                        ««««« Subject Matter Expert 
+                    </div>
+
+                </div>
+              
+        </section>
+
+        <section class="row-education">
+            <div class="section-title">
+                    <img src="../assets/pictos/education.png" alt="edu-icon"><h2>Education</h2>
+            </div>
+            <div class="section-content">
+                <table>
+                    <tr v-for="edu in konsultant.educations" :key="edu.education.name">
+                        <td>{{edu.startDate.substring(0,10)}} to {{edu.endDate.substring(0,10)}} </td>
+                        <td>{{edu.education.name}}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="row-certificate">
+            <div class="section-title">
+                <img src="../assets/pictos/certificate.png" alt="cert-icon"><h2>Certificates/Clearance</h2>
+            </div>
+            <div class="section-content">
+                <table>
+                        <tr v-for="cert in konsultant.certificates" :key="cert.certificate.name">
+                            <td>{{cert.obtension.substring(0,10)}} </td>
+                            <td>{{cert.certificate.name}}</td>
+                        </tr>
+                </table>
+            </div>
+        </section>
+
+        <section class="row-summary">
+            <div class="section-title">
+                    <img src="../assets/pictos/summary.png" alt="sum-icon"><h2>Summary of Professional Experiences</h2>
+            </div>
+            <div class="section-content">
+                    <table>
+                        <tr >
+                            <td class="table table-header">From month/year till month/year </td> <td class="table-header"> Company </td> <td class="table-header">Position</td>
+                        </tr>
+                        <tr v-for="prof in konsultant.professionalExperiences" :key="prof.id">
+                            <td class="table">From {{prof.startDate.substring(0,10)}} to {{prof.endDate.substring(0,10)}} </td> 
+                            <td class="table">{{prof.customer}} </td> 
+                            <td class="table"> {{prof.position}}</td>
+                        </tr>
+                    </table>
+            </div>
+        </section>
+      
+        <section class="row-experience">
+            <div class="section-title">
+                    <img src="../assets/pictos/experience.png" alt="exp-icon"><h2>Professional Experiences</h2>
+            </div>
+            <div class="section-content">
+                <ul>
+                        <li v-for="prof in konsultant.professionalExperiences" :key="prof.id">
+                            From {{prof.startDate.substring(0,10)}} till {{prof.endDate.substring(0,10)}} : {{prof.customer}}<br>
+                            Role : {{prof.position}}<br>
+                            {{prof.summary}}<br>
+                            <h4>Details of Accomplishments :</h4>
+                            <ul>
+                            <li v-for="accomp in prof.Accomplishments" :key="accomp.title">--{{accomp.title}} : {{accomp.summary}}</li>
+                            </ul>
+            
+                            <h4>Technical Environment :</h4>
+                            <ul>
+                            <li v-for="tech in prof.technicalEnvironments" :key="tech.name">
+                                --{{tech.name}} {{tech.option}}
+                            </li>
+                            </ul>
+                        </li>
+                        </ul>
+            </div>  
+        </section>
+
+        <section class="row-reference">
+            <div class="section-title">
+                    <img src="../assets/pictos/reference.png" alt="ref-icon"><h2>Professional References</h2>
+            </div>
+            <div class="section-content">
+                    <ul>
+                        <li v-for="refer in konsultant.professionalReferences" :key="refer.id">{{refer.surname}} , {{refer.name}}, {{refer.function}}, {{refer.contacts.mail}}, {{refer.contacts.phone}}</li>
+                    </ul>
+            </div>
+        </section>
+
+  </div>
