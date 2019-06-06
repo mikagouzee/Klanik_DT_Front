@@ -17,7 +17,12 @@ Vue.use(BootstrapVue);
 
 import VueResource from 'vue-resource'
 Vue.use(VueResource)
+//DataTable.
+import VueGoodTablePlugin from 'vue-good-table';
+// import the styles 
+import 'vue-good-table/dist/vue-good-table.css'
 
+Vue.use(VueGoodTablePlugin);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
