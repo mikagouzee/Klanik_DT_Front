@@ -14,6 +14,7 @@ import KonsultantEdition from '@/components/KonsultantEdition';
 import Register from '@/components/Register';
 import Administration from '@/components/Administration';
 
+
 import store from '../store/store';
 
 Vue.use(Router)

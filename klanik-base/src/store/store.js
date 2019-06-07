@@ -9,6 +9,7 @@ export default new Vuex.Store({
         loggedIn:false,
         currentUser:{},
         selectedKonsultant:{},
+        optIn:false
     },
     mutations:{
         LOG_IN(state,isLog){
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         SELECT_KONSULTANT(state, konsultant){
             state.selectedKonsultant = konsultant;
+        },
+        SET_OPTIN(state, optIn){
+            state.optIn = optIn;
         },
 
     },
@@ -32,6 +36,10 @@ export default new Vuex.Store({
         SelectKonsultant(context, konsultant){
             context.commit('SELECT_KONSULTANT', konsultant);
         },
+        SetOptIn(context, optIn){
+            console.log(optIn)
+            context.commit('SET_OPTIN', optIn);
+        },
     },
     getters:{
         isLogged(state){
@@ -42,6 +50,9 @@ export default new Vuex.Store({
         },
         selectedKonsultant(state){
             return state.selectedKonsultant;
+        },
+        GetOptIn(state){
+            return state.optIn;
         },
     },
     

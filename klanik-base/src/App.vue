@@ -5,10 +5,10 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-navbar-brand to="/">Klanik</b-navbar-brand>
         <router-link v-if="isAdmin" :to="{name:'konsultants'}">Konsultants</router-link> | 
-        <router-link v-if="isLogged" :to="{name:'konsultantCreation'}">Créer mon profil</router-link> |
-        <router-link v-if="isAdmin" :to="{name:'administration'}">Administration</router-link> | 
+        <router-link v-if="isLogged && OptedIn" :to="{name:'konsultantCreation'}">Créer mon profil</router-link> |
+        <router-link v-if="isAdmin && OptedIn" :to="{name:'administration'}">Administration</router-link> | 
         <!-- <button  v-if="isLogged" @click="details">See your profile</button> -->
-        <a v-if="isLogged" href="#" @click="details" >Voir mon profil</a>
+        <a v-if="isLogged && OptedIn" href="#" @click="details" >Voir mon profil</a>
         <!-- <router-link v-if="isLogged" :to="{name:'konsultantDetail', params:{konsultantId:currentUser.sub}}">Voir votre profil</router-link> | -->
         
         <!-- <button @click="log">Log Current User</button> -->
@@ -48,6 +48,9 @@ export default {
     isLogged(){
       return this.$store.getters.currentUser != null && Object.keys(this.$store.getters.currentUser).length;
     },
+    OptedIn(){
+      return this.$store.getters.GetOpIn;
+    }
     // pathId(){
     //   this.$store.getters.currentUser.sub;
     // }

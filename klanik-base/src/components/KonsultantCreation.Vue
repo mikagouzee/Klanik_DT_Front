@@ -243,9 +243,10 @@ export default {
         educations: [],
         certificates: [],
         professionalExperiences: [],
-        professionalReferences:[]
+        professionalReferences:[],
+        optIn : false
       },
-
+    
       newCompetence: {
         isRelevant:true,
       },
@@ -267,7 +268,7 @@ export default {
     }
   },
   mounted() {
-  
+    this.konsultant.optIn =  this.$store.getters.GetOptIn;
   },
   computed: {
     competenceList() {
@@ -308,6 +309,8 @@ export default {
   },
   methods: {
     log(){
+       console.log( this.$store.getters)
+      console.log( this.$store.getters.GetOptIn);
       console.log(JSON.stringify(this.konsultant, null, 4));
     },
 
