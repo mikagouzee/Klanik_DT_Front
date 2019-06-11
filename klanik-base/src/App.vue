@@ -49,7 +49,7 @@ export default {
       return this.$store.getters.currentUser != null && Object.keys(this.$store.getters.currentUser).length;
     },
     OptedIn(){
-      return this.$store.getters.GetOpIn;
+      return this.$store.getters.GetOptIn;
     }
     // pathId(){
     //   this.$store.getters.currentUser.sub;
