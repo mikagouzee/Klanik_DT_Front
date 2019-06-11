@@ -200,19 +200,35 @@ export default {
     },
 
     async getKonsultantById(id) {
-      try {
-        if(this.$store.getters.selectedKonsultant!=null
-         && Object.keys(this.$store.getters.selectedKonsultant).length
-         && this.$store.getters.selectedKonsultant.id == id){
-          console.log("Detail using store konsultant");
-          return this.$store.getters.selectedKonsultant;
-        }
-        else{
-          return await klanikApi.getKonsultantById(id);
-        }
-      } finally {
-        this.ready = true;
+        try {
+          if(this.$store.getters.selectedKonsultant!=null
+          && Object.keys(this.$store.getters.selectedKonsultant).length
+          && this.$store.getters.selectedKonsultant.id == id){
+            console.log("Detail using store konsultant");
+            return this.$store.getters.selectedKonsultant;
+          }
+          else{
+            var fetchedkonsultant = await klanikApi.getKonsultantById(id);
+            
+            if(fetchedkonsultant.id == null)
+            {
+              fetchedkonsultant = {
+                id : id,
+                competences: [],
+                languages: [],
+                educations: [],
+                certificates: [],
+                professionalExperiences: [],
+                professionalReferences:[],
+              };
+            }
+
+            return fetchedkonsultant;
+        } 
       }
+      finally {
+          this.ready = true;
+        }
     },
 
     async getPdf() {
@@ -221,13 +237,13 @@ export default {
       this.ready = false;
 
      try {
-       var newId = await klanikApi.createKonsultant(this.konsultant)
+       var newId = await klanikApi.createKonsultant(this.konsultant);
       return await klanikApi.getCvAsPdf(newId)
         .then(r =>{
           this.cvPdf = "data:application/pdf;base64,"+r;
             // console.log(r);
-          }  );
-      } finally {
+          }  );}
+       finally {
         this.ready = true;
         this.pdf = true;
       }
