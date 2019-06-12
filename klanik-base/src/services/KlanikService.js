@@ -47,6 +47,16 @@ export default{
         return await client().put('/konsultant/', konsultant)
             .then(res => res.data)
             .catch(err => console.log("Error in Konsultants service Create : ", err))
+    },
+
+    async UpdateRecruiterPortfolio(recruiter){
+        //console.log(`Adding ${konsultant} to ${recruiter}`);
+
+        client().defaults.headers.common['Authorization'] = authHeader();
+
+        return await client().post('/recruiter/UpdatePortfolio', recruiter )
+            .then(res => res.data)
+            .catch(err => console.log(err));
     }
    
 
