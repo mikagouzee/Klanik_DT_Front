@@ -51,9 +51,7 @@ export default {
     OptedIn(){
       return this.$store.getters.GetOptIn;
     }
-    // pathId(){
-    //   this.$store.getters.currentUser.sub;
-    // }
+   
   },
   watch:{
   },
