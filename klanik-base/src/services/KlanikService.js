@@ -50,9 +50,19 @@ export default{
     },
     async updateOptIn(id, optIn){
         console.log(`Will update ${id} with optIn : ${optIn}`);
-        return await client().put('/konsultant/OptIn/', {id:id, optIn:optIn})
-        .then(res=>res.data)
-        .catch(err => console.log(err));
+        // return await client().put('/konsultant/OptIn/', {id:id, optIn:optIn})
+        // .then(res=>res.data)
+        // .catch(err => console.log(err));
+    },
+
+    async UpdateRecruiterPortfolio(recruiter){
+        //console.log(`Adding ${konsultant} to ${recruiter}`);
+
+        client().defaults.headers.common['Authorization'] = authHeader();
+
+        return await client().post('/recruiter/UpdatePortfolio', recruiter )
+            .then(res => res.data)
+            .catch(err => console.log(err));
     }
 
 

@@ -1,20 +1,26 @@
 <template>
     <div class="admin-box">
-        <select v-if="users && users.length" v-model="selectedUser">
-            <option v-for="user in users" :value="user" :key="user.id"> 
-                {{user.firstName}}
-            </option>
-        </select>
+        <section>
+            <p>
+                Cette section vous permet de nommer un recruteur en tant qu'administrateur de l'application.
+            </p>
 
-         <select v-if="roles && roles.length" v-model="selectedRole">
-            <option v-for="(role, index) in roles" :value="role" :key="index"> 
-                {{role}}
-            </option>
-        </select>
-        
-        <button @click="setRoleToUser" >
-            Set role
-        </button>
+            <select v-if="users && users.length" v-model="selectedUser">
+                <option v-for="user in recruiterList" :value="user" :key="user.id"> 
+                    Recruiter {{user.firstName}}
+                </option>
+            </select>
+
+            <select v-if="roles && roles.length" v-model="selectedRole">
+                <option v-for="(role, index) in roles" :value="role" :key="index"> 
+                    {{role}}
+                </option>
+            </select>
+            
+            <button @click="setRoleToUser" >
+                Set role
+            </button>
+        </section>
 
 
 
@@ -42,6 +48,9 @@ export default {
         await this.getAllRoles();
     },
     computed:{
+        recruiterList(){
+            return this.users.filter(x => x.userType == 'recruiter');
+        }
 
     },
     watch:{
