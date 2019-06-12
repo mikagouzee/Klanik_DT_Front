@@ -48,12 +48,6 @@ export default{
             .then(res => res.data)
             .catch(err => console.log("Error in Konsultants service Create : ", err))
     },
-    async updateOptIn(id, optIn){
-        console.log(`Will update ${id} with optIn : ${optIn}`);
-        // return await client().put('/konsultant/OptIn/', {id:id, optIn:optIn})
-        // .then(res=>res.data)
-        // .catch(err => console.log(err));
-    },
 
     async UpdateRecruiterPortfolio(recruiter){
         //console.log(`Adding ${konsultant} to ${recruiter}`);
@@ -64,6 +58,7 @@ export default{
             .then(res => res.data)
             .catch(err => console.log(err));
     }
+   
 
 
 

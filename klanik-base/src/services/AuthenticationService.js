@@ -126,8 +126,13 @@ export default {
             .then(
                 ok => {console.log(ok); return ok},
                 ko => {console.log(ok); })
+    },
+    async updateOptIn(id, optIn){
+        console.log(`Will update ${id} with optIn : ${optIn}`);
+        return await client().put('/api/Account/OptIn/', {id:id, optIn:optIn})
+        .then(res=>console.log(res))
+        .catch(err => console.log(err));
     }
-  
   
 }
 
