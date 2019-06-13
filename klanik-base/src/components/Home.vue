@@ -7,7 +7,7 @@
 
         Rassurez vous, nous ne modifions pas vos informations, nous les mettons simplement aux normes de notre charte graphique ;-)
 
-        <gdpr></gdpr>
+        <gdpr v-if="!HasOptedGDPR"></gdpr>
     </p>
 </div>
 </template>
@@ -28,6 +28,10 @@ export default {
     computed: {
         user() {
             return this.$store.getters.currentUser;
+        },
+
+        HasOptedGDPR(){
+            return this.$store.getters.GetOptIn;
         }
     },
     created() {
