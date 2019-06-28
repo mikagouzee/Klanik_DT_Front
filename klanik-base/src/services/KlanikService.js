@@ -80,5 +80,5 @@ export default {
       .post("/recruiter/UpdatePortfolio", recruiter)
       .then(res => res.data)
       .catch(err => console.log(err));
-  }
+  },
 };

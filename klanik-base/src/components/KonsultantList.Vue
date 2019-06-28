@@ -6,13 +6,15 @@
     <button @click="logCurrentUser">Log User</button>
     <div class="tables">
       <vue-good-table
-        v-if="konsultants && !loading"
+        ref="AllK"
+        v-show="konsultants && !loading"
         :columns="columns"
         :rows="konsultants"
         :selectOptions="{
             enabled:true,
             selectOnCheckboxOnly:true
             }"
+        @on-row-click="toggleSelectRow"
         @on-selected-rows-change="selectionChanged"
         @on-row-dblclick="seeDetails"
         :search-options="{
@@ -25,34 +27,12 @@
         <div slot="selected-row-actions">
           <button @click="AddKonsultantToRecruiter">Add konsultant(s) to portfolio</button>
         </div>
-      </vue-good-table>
-      <h2>My Konsultants</h2>
-      <vue-good-table
-        v-if="managedKonsultants && !loading"
-        :columns="columns"
-        :rows="managedKonsultants"
-        :selectOptions="{
-            enabled:true,
-            selectOnCheckboxOnly:true
-            }"
-        @on-selected-rows-change="selectionChanged"
-        @on-row-dblclick="seeDetails"
-        :search-options="{
-    enabled: true,
-  
-    skipDiacritics: true,
-    placeholder: 'Search this table',
-   
-  }"
-      >
-        <template slot="table-row" slot-scope="props">
+        <!-- <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'action'">
-            <b-button class="myButton" @click="removeKonsultant(props.row)">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </b-button>
+            <b-checkbox @change="checkboxchanged">Is Actif ATM</b-checkbox>
           </span>
           <span v-else>{{props.formattedRow[props.column.field]}}</span>
-        </template>
+        </template> -->
       </vue-good-table>
     </div>
 
@@ -63,7 +43,7 @@
       md-persistent
     >
       <span>{{snackbarMessage}}</span>
-      <md-button class="md-primary" @click="showSnackbar = false">Ok</md-button>
+      <md-button @click="showSnackbar = false">Ok</md-button>
     </md-snackbar>
   </div>
 </template>
@@ -98,16 +78,24 @@ export default {
         {
           label: "Function",
           field: "function"
-        },
-        {
-          label:"action",
-          field:"action"
-        }
+        }//,
+        // {
+        //   label: "action",
+        //   field: "action"
+        // }
       ]
     };
   },
   async created() {
     this.getAllKonsultants();
+  },
+  mounted: function() {
+    // setTimeout(() => {
+    //   console.log(this.$refs["AllK"].rows);
+    //   this.$refs["AllK"].rows.forEach(e => {
+    //     this.$set(e, "vgtSelected", true);
+    //   });
+    // }, 0);
   },
   computed: {
     currentUser() {
@@ -119,29 +107,43 @@ export default {
     }
   },
   methods: {
+    checkboxchanged(p){
+    },
     log() {
       console.log(this.currentUser);
     },
     logCurrentUser() {
       console.log(this.$store.getters.currentUser);
     },
-  removeKonsultant(row){
-    this.currentUser.konsultants.splice(this.currentUser.konsultants.indexOf(row.id),1)
-  },
+    async removeKonsultant(row) {
+      this.currentUser.konsultants.splice(
+        this.currentUser.konsultants.indexOf(row.id),
+        1
+      );
+      this.managedKonsultants.splice(this.managedKonsultants.indexOf(row), 1);
+      this.AddKonsultantToRecruiter();
+    },
     async getAllKonsultants() {
       this.loading = true;
+      let that = this;
       try {
         this.konsultants = await KlanikApi.getAllKonsultants();
         this.portfolio = await KlanikApi.getOwnedKonsultant(
           this.currentUser.id
         ).then(r => {
           r.data.portfolio.forEach(p => {
-            this.managedKonsultants.push(p);
             this.currentUser.konsultants.push(p.id);
           });
         });
       } finally {
         this.loading = false;
+        this.currentUser.konsultants.forEach(kons => {
+          that.$refs["AllK"].rows.forEach(function(e) {
+            if (e["id"] == kons) {
+              that.$set(e, "vgtSelected", true);
+            }
+          });
+        });
       }
     },
     seeDetails(params) {
@@ -157,21 +159,39 @@ export default {
         () => {
           this.showSnackbar = true;
           this.snackbarMessage = "Konsultant added to your portfolio.";
-          this.getAllKonsultants();
         }
       );
     },
-    selectionChanged(params) {
-      // this.currentUser.konsultants = [];
-
-      for (let index = 0; index < params.selectedRows.length; index++) {
-        const element = params.selectedRows[index];
-        if (this.currentUser.konsultants.indexOf(element.id) < 0) {
-          this.currentUser.konsultants.push(element.id);
+    toggleSelectRow(params) {
+      if (params.selected) {
+        if (this.currentUser.konsultants.indexOf(params.row.id) < 0) {
+          this.currentUser.konsultants.push(params.row.id);
         }
+      } else {
+        this.currentUser.konsultants.splice(
+          this.currentUser.konsultants.indexOf(params.row.id),
+          1
+        );
       }
+    },
+    selectionChanged(params) {
+      // for (let index = 0; index < params.selectedRows.length; index++) {
+      //   const element = params.selectedRows[index];
+      //   console.log(params.selected);
+      //   if (element.vgtSelected) {
+      //     if (this.currentUser.konsultants.indexOf(element.id) < 0) {
+      //       this.currentUser.konsultants.push(element.id);
+      //     }
+      //   } else {
+      //     this.currentUser.konsultants.splice(
+      //       this.currentUser.konsultants.indexOf(element.id),
+      //       1
+      //     );
+      //   }
+      // }
     }
   },
+
   components: {
     VueGoodTable
   }
@@ -179,6 +199,9 @@ export default {
 </script>
 
 <style>
+.container {
+  margin-bottom: 25px;
+}
 .tables {
   display: grid;
   grid-template-columns: 1fr;
