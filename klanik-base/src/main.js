@@ -10,6 +10,10 @@ import '../node_modules/bootstrap/dist/css/Bootstrap.css';
 import '../node_modules/bootstrap-vue/dist/bootstrap-vue.css';
 
 
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
+
+Vue.use(VueMaterial)
 
 Vue.config.productionTip = false
 
