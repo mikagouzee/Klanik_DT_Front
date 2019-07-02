@@ -32,7 +32,7 @@
             <b-checkbox @change="checkboxchanged">Is Actif ATM</b-checkbox>
           </span>
           <span v-else>{{props.formattedRow[props.column.field]}}</span>
-        </template> -->
+        </template>-->
       </vue-good-table>
     </div>
 
@@ -78,7 +78,7 @@ export default {
         {
           label: "Function",
           field: "function"
-        }//,
+        } //,
         // {
         //   label: "action",
         //   field: "action"
@@ -89,14 +89,7 @@ export default {
   async created() {
     this.getAllKonsultants();
   },
-  mounted: function() {
-    // setTimeout(() => {
-    //   console.log(this.$refs["AllK"].rows);
-    //   this.$refs["AllK"].rows.forEach(e => {
-    //     this.$set(e, "vgtSelected", true);
-    //   });
-    // }, 0);
-  },
+  mounted: function() {},
   computed: {
     currentUser() {
       return {
@@ -107,8 +100,7 @@ export default {
     }
   },
   methods: {
-    checkboxchanged(p){
-    },
+    checkboxchanged(p) {},
     log() {
       console.log(this.currentUser);
     },
@@ -128,22 +120,26 @@ export default {
       let that = this;
       try {
         this.konsultants = await KlanikApi.getAllKonsultants();
+        console.log(this.konsultants);
         this.portfolio = await KlanikApi.getOwnedKonsultant(
           this.currentUser.id
         ).then(r => {
+          console.log(r);
           r.data.portfolio.forEach(p => {
             this.currentUser.konsultants.push(p.id);
           });
         });
       } finally {
         this.loading = false;
-        this.currentUser.konsultants.forEach(kons => {
-          that.$refs["AllK"].rows.forEach(function(e) {
-            if (e["id"] == kons) {
-              that.$set(e, "vgtSelected", true);
-            }
+        if (this.currentUser.konsultants) {
+          this.currentUser.konsultants.forEach(kons => {
+            that.$refs["AllK"].rows.forEach(function(e) {
+              if (e["id"] == kons) {
+                that.$set(e, "vgtSelected", true);
+              }
+            });
           });
-        });
+        }
       }
     },
     seeDetails(params) {
@@ -163,6 +159,8 @@ export default {
       );
     },
     toggleSelectRow(params) {
+      //If parame has 'selected' -> It's a check box.
+      console.log(params);
       if (params.selected) {
         if (this.currentUser.konsultants.indexOf(params.row.id) < 0) {
           this.currentUser.konsultants.push(params.row.id);

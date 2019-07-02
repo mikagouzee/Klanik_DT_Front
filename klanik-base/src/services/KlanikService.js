@@ -7,9 +7,9 @@ export default {
     console.log("Service : Get All Konsultants");
 
     var myHeader = authHeader();
-
+    
     client().defaults.headers.common["Authorization"] = authHeader();
-
+   
     return client()
       .get("/konsultant/")
       .then(res => res.data)
