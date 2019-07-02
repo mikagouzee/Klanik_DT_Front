@@ -5,7 +5,7 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-navbar-brand to="/">Klanik</b-navbar-brand>
         <router-link v-if="isAdmin" :to="{name:'konsultants'}">Konsultants</router-link> | 
-        <router-link v-if="isLogged && OptedIn" :to="{name:'konsultantCreation'}">Créer mon profil</router-link> |
+        <router-link v-if="isLogged && OptedIn && !HasProfile" :to="{name:'konsultantCreation'}">Créer mon profil</router-link> |
         <router-link v-if="isAdmin && OptedIn" :to="{name:'administration'}">Administration</router-link> | 
         <!-- <button  v-if="isLogged" @click="details">See your profile</button> -->
         <a v-if="isLogged && OptedIn" href="#" @click="details" >Voir mon profil</a>
@@ -50,6 +50,9 @@ export default {
     },
     OptedIn(){
       return this.$store.getters.GetOptIn;
+    },
+    HasProfile(){
+      return this.$store.getters.isUserKonsultant;
     }
    
   },
