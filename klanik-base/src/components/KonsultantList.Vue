@@ -119,6 +119,10 @@ export default {
     }
   },
   methods: {
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     log() {
       console.log(this.currentUser);
     },
