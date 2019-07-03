@@ -152,9 +152,17 @@ export default {
     },
     async AddKonsultantToRecruiter() {
       return await KlanikApi.UpdateRecruiterPortfolio(this.currentUser).then(
-        () => {
+        r => {
+          console.log("resp");
+          console.log(r);
           this.showSnackbar = true;
-          this.snackbarMessage = "Konsultant added to your portfolio.";
+          if (r.length > 0) {
+            r.forEach(element => {
+              this.snackbarMessage += element + ".\n";
+            });
+          } else {
+            this.snackbarMessage = "Konsultant added to your portfolio.";
+          }
         }
       );
     },
