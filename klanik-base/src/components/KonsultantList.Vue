@@ -78,11 +78,7 @@ export default {
         {
           label: "Function",
           field: "function"
-        } //,
-        // {
-        //   label: "action",
-        //   field: "action"
-        // }
+        }
       ]
     };
   },
@@ -100,7 +96,6 @@ export default {
     }
   },
   methods: {
-    checkboxchanged(p) {},
     log() {
       console.log(this.currentUser);
     },

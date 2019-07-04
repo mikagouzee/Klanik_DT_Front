@@ -322,7 +322,9 @@ export default {
           res => {
             console.log("return of creation : ", res);
             this.saved = true;
-            this.currentId = res;},
+            this.currentId = res;
+              this.$router.push({name:'konsultantEdition', params:{konsultantId:this.currentId}});
+            },
           ko => {console.log("Error while saving konsultant...")}
         );
     },
