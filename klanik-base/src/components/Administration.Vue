@@ -6,8 +6,8 @@
             </p>
 
             <select v-if="users && users.length" v-model="selectedUser">
-                <option v-for="user in recruiterList" :value="user" :key="user.id"> 
-                    Recruiter {{user.firstName}}
+                <option v-for="user in users" :value="user" :key="user.id"> 
+                     {{user.firstName}}
                 </option>
             </select>
 
@@ -65,6 +65,7 @@ export default {
         async getAllUsers(){
             return await authenticationService.getAllUsers()
                 .then(res => {
+                    console.log(res);
                     //console.log("users :",res);
                     this.users = res.data;
                     }
@@ -81,8 +82,10 @@ export default {
         },
 
         async setRoleToUser(){
+            console.log(this.selectedUser.id)
+            console.log(this.selectedRole)
             //console.log("Setting role", this.selectedRole, " to user", this.selectedUser.firstName);
-            return await authenticationService.setRoleToUser(selectedUser.userId, selectedRole);
+            return await authenticationService.setRoleToUser(this.selectedUser.id, this.selectedRole);
         }
     }
 }

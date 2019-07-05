@@ -90,6 +90,10 @@ export default {
     currentUser() {
       return {
         id: this.$store.getters.currentUser.sub,
+        recruiter : {
+          Name: this.$store.getters.currentUser.family_name,
+          Surname: this.$store.getters.currentUser.given_name
+        },
         konsultants: [],
         portfolio: []
       };

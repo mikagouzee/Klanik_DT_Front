@@ -108,17 +108,8 @@ export default {
     return formData;
   },
 
-  async getAllUsers() {
-    return await client()
-      .get("/api/account/users")
-      .then(
-        ok => {
-          return ok;
-        },
-        ko => {
-          console.log("Error in getting users : ", ko);
-        }
-      );
+  async getAllUsers() { 
+    return await client().get('api/Account/users').then(ok=>{return ok;}, ko=>console.log(ko));
   },
 
   async getAllRoles() {
@@ -136,16 +127,8 @@ export default {
 
   async setRoleToUser(userId, selectedRole) {
     return await client()
-      .post(`/api/account/SetRole/{userId}/{selectedRole}`)
-      .then(
-        ok => {
-          console.log(ok);
-          return ok;
-        },
-        ko => {
-          console.log(ok);
-        }
-      );
+      .post(`/api/account/SetRole/${userId}/${selectedRole}`)
+      .then(()=>{});
   },
   async updateOptIn(id, optIn) {
     console.log(`Will update ${id} with optIn : ${optIn}`);

@@ -15,6 +15,7 @@ export default new Vuex.Store({
       state.loggedIn = isLog;
     },
     SET_USER(state, user) {
+      console.log(user)
       state.currentUser = user;
     },
     SELECT_KONSULTANT(state, konsultant) {
