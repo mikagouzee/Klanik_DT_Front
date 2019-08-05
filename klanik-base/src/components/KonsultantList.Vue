@@ -2,8 +2,12 @@
   <div class="container">
     <h2>Konsultants of Klanik</h2>
 
-    <button @click="log">Log</button>
-    <button @click="logCurrentUser">Log User</button>
+    <b-button @click="log" variant="light">Log</b-button>
+    <b-button @click="logCurrentUser" variant="light">Log User</b-button>
+    <b-button variant="light"
+      @click="AddKonsultantToRecruiter"
+    >Update my Konsultant</b-button>
+
     <div class="tables">
       <vue-good-table
         ref="AllK"
@@ -55,6 +59,9 @@ export default {
   name: "konsultants",
   data() {
     return {
+      //button
+      pristine: "light",
+      disabledButton: true,
       //SnackBar
       showSnackbar: false,
       position: "center",
@@ -90,7 +97,7 @@ export default {
     currentUser() {
       return {
         id: this.$store.getters.currentUser.sub,
-        recruiter : {
+        recruiter: {
           Name: this.$store.getters.currentUser.family_name,
           Surname: this.$store.getters.currentUser.given_name
         },
@@ -152,8 +159,6 @@ export default {
     async AddKonsultantToRecruiter() {
       return await KlanikApi.UpdateRecruiterPortfolio(this.currentUser).then(
         r => {
-          console.log("resp");
-          console.log(r);
           this.showSnackbar = true;
           if (r.length > 0) {
             r.forEach(element => {
@@ -161,13 +166,16 @@ export default {
             });
           } else {
             this.snackbarMessage = "Konsultant added to your portfolio.";
+            this.pristine = "light";
+            this.disabledButton = false;
           }
         }
       );
     },
     toggleSelectRow(params) {
-      //If parame has 'selected' -> It's a check box.
-      console.log(params);
+      console.log(params.selected)
+      this.pristine = "warning";
+      this.disabledButton = false;
       if (params.selected) {
         if (this.currentUser.konsultants.indexOf(params.row.id) < 0) {
           this.currentUser.konsultants.push(params.row.id);
@@ -180,6 +188,7 @@ export default {
       }
     },
     selectionChanged(params) {
+      
       // for (let index = 0; index < params.selectedRows.length; index++) {
       //   const element = params.selectedRows[index];
       //   console.log(params.selected);

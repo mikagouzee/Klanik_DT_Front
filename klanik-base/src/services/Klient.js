@@ -3,7 +3,7 @@ import axios from "axios";
 export default () => {
   // create a new axios instance
   const instance = axios.create({
-    baseURL: "https://localhost:44356/api/",
+    baseURL: "https://klanikiat.ddns.net/api",
     json: true,
     headers: {
       "X-Clacks-Overhead": "GNU Pratchett"

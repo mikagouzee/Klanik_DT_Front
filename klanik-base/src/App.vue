@@ -1,31 +1,37 @@
 <template>
-  <div id="app">
-    <header>
-      <b-navbar type="light" variant="light">
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-        <b-navbar-brand to="/">Klanik</b-navbar-brand>
-        <router-link v-if="(isAdmin || isRecruteur)" :to="{name:'konsultants'}">Konsultants</router-link>|
-        <router-link
-          v-if="isLogged && OptedIn && !HasProfile"
-          :to="{name:'konsultantCreation'}"
-        >Créer mon profil</router-link>|
-        <router-link v-if="(isAdmin || isRecruteur) && OptedIn" :to="{name:'administration'}">Administration</router-link>|
-        <!-- <button  v-if="isLogged" @click="details">See your profile</button> -->
-        <a v-if="isLogged && OptedIn && HasProfile" href="#" @click="details">Voir mon profil</a>
-        <!-- <router-link v-if="isLogged" :to="{name:'konsultantDetail', params:{konsultantId:currentUser.sub}}">Voir votre profil</router-link> | -->
+<div id="app">
+  <header>
+    <b-navbar type="light" variant="light">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-navbar-brand to="/">Klanik</b-navbar-brand>
+      <router-link v-if="(isAdmin || isRecruteur)" :to="{name:'konsultants'}">Konsultants</router-link>|
+      <router-link
+        v-if="isLogged && OptedIn && !HasProfile"
+        :to="{name:'konsultantCreation'}"
+      >Créer mon profil</router-link>|
+      <router-link
+        v-if="(isAdmin || isRecruteur) && OptedIn"
+        :to="{name:'administration'}"
+      >Administration</router-link>|
+      <!-- <button  v-if="isLogged" @click="details">See your profile</button> -->
+      <a v-if="isLogged && OptedIn && HasProfile" href="#" @click="details">Voir mon profil</a>
+      <!-- <router-link v-if="isLogged" :to="{name:'konsultantDetail', params:{konsultantId:currentUser.sub}}">Voir votre profil</router-link> | -->
+      <router-link v-if="isLogged" to="/gdpr">GDPR</router-link>
 
-        <!-- <button @click="log">Log Current User</button> -->
+      <!-- <button @click="log">Log Current User</button> -->
 
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item right>
-            <login></login>
-          </b-nav-item>
-        </b-navbar-nav>
-      </b-navbar>
-    </header>
-
-    <router-view />
-  </div>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item right>
+          <b-button v-if="isLogged" variant="danger" @click="logOut">Log-out</b-button>
+          <router-link v-if="!isLogged" :to="{name:'login'}">Log In </router-link>
+          <!-- <login></login> -->
+        </b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
+  </header>
+  <body></body>
+  <router-view />
+</div>
 </template>
 
 <script>
@@ -42,16 +48,22 @@ export default {
   },
   computed: {
     isAdmin() {
-      if (this.$store.getters.currentUser && this.$store.getters.currentUser.role)
+      if (
+        this.$store.getters.currentUser &&
+        this.$store.getters.currentUser.role
+      )
         return (
           this.$store.getters.currentUser.role.indexOf("Admin") > -1 ||
-          this.$store.getters.currentUser.role.indexOf("SuperUser") > -1 
+          this.$store.getters.currentUser.role.indexOf("SuperUser") > -1
         );
       else return false;
     },
-    isRecruteur(){
-      if (this.$store.getters.currentUser && this.$store.getters.currentUser.role)
-         return this.$store.getters.currentUser.role.indexOf("Recruteur") > -1
+    isRecruteur() {
+      if (
+        this.$store.getters.currentUser &&
+        this.$store.getters.currentUser.role
+      )
+        return this.$store.getters.currentUser.role.indexOf("Recruteur") > -1;
     },
     isLogged() {
       return (
@@ -80,6 +92,10 @@ export default {
           name: "konsultantDetail",
           params: { konsultantId: this.$store.getters.currentUser.sub }
         });
+    },
+    logOut() {
+      authenticationService.logout();
+      this.$router.push("/login");
     }
   }
 };

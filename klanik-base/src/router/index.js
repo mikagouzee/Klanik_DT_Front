@@ -13,6 +13,7 @@ import KonsultantCreation from "@/components/KonsultantCreation";
 import KonsultantEdition from "@/components/KonsultantEdition";
 import Register from "@/components/Register";
 import Administration from "@/components/Administration";
+import GDPR from "@/components/gdpr";
 
 import store from "../store/store";
 
@@ -30,7 +31,7 @@ export const router = new Router({
     {
       path: "/login",
       name: "login",
-      component: LoginMessage
+      component: Login
     },
     {
       path: "/register",
@@ -75,6 +76,11 @@ export const router = new Router({
       path: "/admin",
       name: "administration",
       component: Administration
+    },
+    {
+      path:"/gdpr",
+      name:"GDPR",
+      component : GDPR
     },
     {
       path: "*",

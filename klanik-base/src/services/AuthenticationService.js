@@ -128,7 +128,8 @@ export default {
   async setRoleToUser(userId, selectedRole) {
     return await client()
       .post(`/api/account/SetRole/${userId}/${selectedRole}`)
-      .then(()=>{});
+      .then(()=>{
+      });
   },
   async updateOptIn(id, optIn) {
     console.log(`Will update ${id} with optIn : ${optIn}`);

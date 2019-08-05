@@ -10,13 +10,13 @@
     </div>
 
     <div class="pdf" v-if="pdf">
-      <iframe id="cv-pdf" :src="cvPdf"/>
+      <iframe id="cv-pdf" :src="cvPdf" />
     </div>
 
     <div class="CV" v-if="!pdf && ready && konsultant != null">
       <section class="box-header">
         <div class="Klanik-logo">
-          <img src="../assets/pictos/logo1.png" alt="logo" class="logo">
+          <img src="../assets/pictos/logo1.png" alt="logo" class="logo" />
         </div>
 
         <div class="box-infos">
@@ -24,9 +24,9 @@
 
           <div class="box-summary">
             {{konsultant.function}}
-            <br>
+            <br />
             {{mainCompetence}}
-            <br>
+            <br />
             Available starting {{konsultant.availability.substring(0,10)}}
           </div>
         </div>
@@ -36,7 +36,7 @@
 
       <section class="row-competences">
         <div class="section-title">
-          <img src="../assets/pictos/competence.png" alt="comp-icon" align="top">
+          <img src="../assets/pictos/competence.png" alt="comp-icon" align="top" />
           <h2>Competences</h2>
         </div>
         <div class="section-content">
@@ -44,14 +44,18 @@
             <table class="skillTable1">
               <tr v-for="thiscomp in firstHalfSkill" :key="thiscomp.name">
                 <td class="skill">{{thiscomp.name}}</td>
-                <td class="skill">{{thiscomp.rating}}</td>
+                <td class="skill">
+                  <span  v-for="idx in thiscomp.rating" :key="idx">&#9733;</span>
+                </td>
               </tr>
             </table>
 
             <table class="skillTable2">
               <tr v-for="thatcomp in secondHalfSkill" :key="thatcomp.name">
                 <td class="skill">{{thatcomp.name}}</td>
-                <td class="skill">{{thatcomp.rating}}</td>
+                <td class="skill">
+                  <span v-for="idx in thatcomp.rating" :key="idx">&#9733;</span>
+                </td>
               </tr>
             </table>
           </div>
@@ -67,18 +71,18 @@
           </div>
 
           <div class="box-legend">
-            « I have some competences
-            <br>«« I know how to do but I need support
-            <br>««« Good level
-            <br>«««« Very good level / mastering the topic
-            <br>««««« Subject Matter Expert
+            &#9733; I have some competences
+            <br />&#9733;&#9733; I know how to do but I need support
+            <br />&#9733;&#9733;&#9733; Good level
+            <br />&#9733;&#9733;&#9733;&#9733; Very good level / mastering the topic
+            <br />&#9733;&#9733;&#9733;&#9733;&#9733; Subject Matter Expert
           </div>
         </div>
       </section>
 
       <section class="row-education">
         <div class="section-title">
-          <img src="../assets/pictos/education.png" alt="edu-icon">
+          <img src="../assets/pictos/education.png" alt="edu-icon" />
           <h2>Education</h2>
         </div>
         <div class="section-content">
@@ -93,7 +97,7 @@
 
       <section class="row-certificate">
         <div class="section-title">
-          <img src="../assets/pictos/certificate.png" alt="cert-icon">
+          <img src="../assets/pictos/certificate.png" alt="cert-icon" />
           <h2>Certificates/Clearance</h2>
         </div>
         <div class="section-content">
@@ -108,7 +112,7 @@
 
       <section class="row-summary">
         <div class="section-title">
-          <img src="../assets/pictos/summary.png" alt="sum-icon">
+          <img src="../assets/pictos/summary.png" alt="sum-icon" />
           <h2>Summary of Professional Experiences</h2>
         </div>
         <div class="section-content">
@@ -134,7 +138,7 @@
 
       <section class="row-experience">
         <div class="section-title">
-          <img src="../assets/pictos/experience.png" alt="exp-icon">
+          <img src="../assets/pictos/experience.png" alt="exp-icon" />
           <h2>Professional Experiences</h2>
         </div>
         <div class="section-content">
@@ -144,11 +148,11 @@
               :key="index"
             >
               From {{prof.startDate.substring(0,10)}} till {{prof.endDate.substring(0,10)}} : {{prof.customer}}
-              <br>
+              <br />
               Role : {{prof.position}}
-              <br>
+              <br />
               {{prof.summary}}
-              <br>
+              <br />
               <h5>Details of Accomplishments :</h5>
               <ul>
                 <li
@@ -171,7 +175,7 @@
 
       <section class="row-reference">
         <div class="section-title">
-          <img src="../assets/pictos/reference.png" alt="ref-icon">
+          <img src="../assets/pictos/reference.png" alt="ref-icon" />
           <h2>Professional References</h2>
         </div>
         <div class="section-content">
@@ -267,8 +271,8 @@ export default {
         this.pdf = true;
       }
     },
-     getWord() {
-      return  klanikApi.getCvAsWord(this.konsultant.id);
+    getWord() {
+      return klanikApi.getCvAsWord(this.konsultant.id);
     },
     edit() {
       this.$router.push({
@@ -324,7 +328,7 @@ export default {
 <style>
 iframe {
   width: 1200px;
-  height: 22000px;
+  height: 1000px !important;
 }
 
 .footer {

@@ -35,13 +35,14 @@ export default {
       );
   },
   getCvAsWord(id) {
+    let wordKonsultant  = store.getters.selectedKonsultant;
     return client()
       .get("/Konsultant/Word/" + id, { responseType: "blob" })
       .then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `${id}.docx`); //or any other extension
+        link.setAttribute("download", `${wordKonsultant.name}_${wordKonsultant.surname}.docx`); //or any other extension
         document.body.appendChild(link);
         link.click();
       });
@@ -72,7 +73,6 @@ export default {
     return await client().get(`/recruiter/Portfolio/${id}`);
   },
   async UpdateRecruiterPortfolio(recruiter) {
-    //console.log(`Adding ${konsultant} to ${recruiter}`);
 
     client().defaults.headers.common["Authorization"] = authHeader();
 
