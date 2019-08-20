@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="button-box">
-      <md-button  class="md-raised md-primary" @click="update">Save</md-button>
+      <md-button class="md-raised md-primary" @click="update">Save</md-button>
     </div>
 
     <div class="CV">
@@ -36,11 +36,25 @@
           <img src="../assets/pictos/competence.png" alt="comp-icon" align="top" />
           <h2>Competences</h2>
         </div>
-        <div class="">
+        <div class>
           <div class="box box-competences">
             <div class="form">
               <label>Add a competence :</label>
-              <input v-model="newCompetence.name" placeholder="e.g. ASP.Net " class="form-control" />
+              <!-- <input v-model="newCompetence.name" placeholder="e.g. ASP.Net " class="form-control" /> -->
+              <multiselect
+                v-if="availablecompetences"
+                v-model="newCompetence.name"
+                tag-placeholder="Add this as new tag"
+                placeholder="Search or add a tag"
+                :options="availablecompetences"
+                :taggable="true"
+                @tag="addTag"
+                :loading="isLoading"
+                :searchable="true"
+                :internal-search="false"
+                :options-limit="10"
+                @search-change="asyncFind"
+              ></multiselect>
               <label>Rating :</label>
               <div @mouseleave="showCurrentRating(0)">
                 <star-rating
@@ -316,7 +330,7 @@
             <button @click="removeFromList(ref, konsultant.professionalReferences)">X</button>
           </div>
 
-          <div class=" refes">
+          <div class="refes">
             <input v-model="otherReference.name" placeholder="Name" />
             <input v-model="otherReference.surname" placeholder="Surname" />
             <input v-model="otherReference.function" placeholder="Function" />
@@ -328,7 +342,7 @@
         </div>
       </section>
     </div>
-     <md-button  class="md-raised md-success" @click="update">Save</md-button>
+    <md-button class="md-raised md-success" @click="update">Save</md-button>
   </div>
 </template>
 
@@ -337,11 +351,12 @@ import KlanikApi from "@/services/KlanikService";
 import professionalExperience from "./ProfessionalExperience";
 import { dateFilter, lngFilter } from "../tools/filters";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
+import Multiselect from "vue-multiselect";
 export default {
   name: "KonsultantEdition",
   components: {
-    professionalExperience: professionalExperience
+    professionalExperience: professionalExperience,
+    Multiselect
   },
   filters: {
     toDate: dateFilter,
@@ -354,6 +369,8 @@ export default {
         toolbar: ["bold", "italic", "bulletedList", "numberedList"],
         placeholder: "Summary"
       },
+      isLoading: false,
+      availablecompetences: [],
       konsultant: {
         competences: [],
         languages: [],
@@ -407,6 +424,13 @@ export default {
       },
       ratingmsg: ""
     };
+  },
+  mounted() {
+    KlanikApi.GetAllCompStartingBy("").then(c => {
+      c.data.forEach(element => {
+        this.availablecompetences.push(element.name);
+      });
+    });
   },
   async created() {
     if (
@@ -490,8 +514,22 @@ export default {
           break;
       }
     },
+     addTag: function(newTag) {
+      this.availablecompetences.push(newTag);
+      this.newCompetence.name = newTag;
+    },
+    asyncFind(query) {
+      this.isLoading = true;
+      KlanikApi.GetAllCompStartingBy(query).then(response => {
+        this.availablecompetences  = [];
+        response.data.forEach(element => {
+          this.availablecompetences.push(element.name);
+           this.isLoading = false;
+        });
+      });
+    
+    },
     async save() {
-      //console.log("Saving " + this.konsultant.name);
       this.$store.dispatch("SelectKonsultant", this.konsultant);
       await KlanikApi.createKonsultant(this.konsultant);
     },
@@ -514,13 +552,11 @@ export default {
 
     addToList: function(value, list, expectedlength) {
       if (Object.keys(value).length >= expectedlength) {
-        // console.log(Object.keys(value));
         list.push(value);
       }
     },
     removeFromList: function(value, list) {
       if (list.indexOf(value) > -1) {
-        // list.splice(list.indexOf(value), 1);
         this.markAsDeleted(value);
       }
     },
