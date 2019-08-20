@@ -4,7 +4,7 @@
       Include : <input type="checkbox" v-model="professionalExperience.isRelevant">
     <p>From {{professionalExperience.startDate.substring(0,10)}} till {{professionalExperience.endDate.substring(0,10)}} : {{professionalExperience.customer}}</p>
     <h5>Summary</h5>
-    <span>{{professionalExperience.summary}}</span>
+    <span v-html="professionalExperience.summary"></span>
     
     <h5>Details of accomplishments</h5> 
     <ul v-if="professionalExperience.accomplishments != null && professionalExperience.accomplishments.length">

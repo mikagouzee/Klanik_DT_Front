@@ -22,11 +22,5 @@ export default () => {
     return response;
   });
   return instance;
-  // return axios.create({
-  //   baseURL: "https://localhost:44356/api/",
-  //   json: true,
-  //   headers: {
-  //     "X-Clacks-Overhead": "GNU Pratchett"
-  //   }
-  // });
+ 
 };

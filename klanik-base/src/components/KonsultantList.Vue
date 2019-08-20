@@ -2,11 +2,10 @@
   <div class="container">
     <h2>Konsultants of Klanik</h2>
 
-    <b-button @click="log" variant="light">Log</b-button>
-    <b-button @click="logCurrentUser" variant="light">Log User</b-button>
-    <b-button variant="light"
-      @click="AddKonsultantToRecruiter"
-    >Update my Konsultant</b-button>
+    <!-- <b-button @click="log" variant="light">Log</b-button>
+    <b-button @click="logCurrentUser" variant="light">Log User</b-button>-->
+    <b-button variant="light" @click="AddKonsultantToRecruiter">Update my Konsultant</b-button>
+    <b-button variant="outline-primary" @click="AddKonsultant">Add a Konsultant</b-button>
 
     <div class="tables">
       <vue-good-table
@@ -22,21 +21,28 @@
         @on-selected-rows-change="selectionChanged"
         @on-row-dblclick="seeDetails"
         :search-options="{
-    enabled: true,
-    skipDiacritics: true,
-    placeholder: 'Search this table',
-   
-  }"
+          enabled: true,
+          skipDiacritics: true,
+          placeholder: 'Search this table'}"
+        :pagination-options="{
+          enabled: true,
+          mode: 'records',
+          perPage: 10,
+          nextLabel: 'next',
+          prevLabel: 'prev',
+          rowsPerPageLabel: 'Rows per page',
+          ofLabel: 'of',
+          pageLabel: 'page', // for 'pages' mode
+          allLabel: 'All'}"
       >
-        <div slot="selected-row-actions">
-          <button @click="AddKonsultantToRecruiter">Add konsultant(s) to portfolio</button>
-        </div>
-        <!-- <template slot="table-row" slot-scope="props">
+        <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'action'">
-            <b-checkbox @change="checkboxchanged">Is Actif ATM</b-checkbox>
+            <md-button class="md-icon-button" @click="seeDetails(props)">
+              <md-icon>visibility</md-icon>
+            </md-button>
           </span>
           <span v-else>{{props.formattedRow[props.column.field]}}</span>
-        </template>-->
+        </template>
       </vue-good-table>
     </div>
 
@@ -55,10 +61,17 @@
 <script>
 import KlanikApi from "@/services/KlanikService";
 import { VueGoodTable } from "vue-good-table";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 export default {
   name: "konsultants",
   data() {
     return {
+      //CheckEditor
+      editor: ClassicEditor,
+      editorConfig: {
+        toolbar: ["bold", "italic", "bulletedList", "numberedList"]
+      },
       //button
       pristine: "light",
       disabledButton: true,
@@ -85,11 +98,16 @@ export default {
         {
           label: "Function",
           field: "function"
+        },
+        {
+          label: "",
+          field: "action"
         }
       ]
     };
   },
   async created() {
+    this.loading = true;
     this.getAllKonsultants();
   },
   mounted: function() {},
@@ -149,6 +167,7 @@ export default {
       }
     },
     seeDetails(params) {
+      console.log(params);
       this.$router.push({
         name: "konsultantDetail",
         params: {
@@ -172,8 +191,11 @@ export default {
         }
       );
     },
+    AddKonsultant() {
+      this.$router.push({ path: "/konsultant/new" });
+    },
     toggleSelectRow(params) {
-      console.log(params.selected)
+      console.log(params.selected);
       this.pristine = "warning";
       this.disabledButton = false;
       if (params.selected) {
@@ -187,23 +209,7 @@ export default {
         );
       }
     },
-    selectionChanged(params) {
-      
-      // for (let index = 0; index < params.selectedRows.length; index++) {
-      //   const element = params.selectedRows[index];
-      //   console.log(params.selected);
-      //   if (element.vgtSelected) {
-      //     if (this.currentUser.konsultants.indexOf(element.id) < 0) {
-      //       this.currentUser.konsultants.push(element.id);
-      //     }
-      //   } else {
-      //     this.currentUser.konsultants.splice(
-      //       this.currentUser.konsultants.indexOf(element.id),
-      //       1
-      //     );
-      //   }
-      // }
-    }
+    selectionChanged(params) {}
   },
 
   components: {

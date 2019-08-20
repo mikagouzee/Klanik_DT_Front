@@ -81,4 +81,12 @@ export default {
       .then(res => res.data)
       .catch(err => console.log(err));
   },
+  async GetAllComp(){
+    return await client().get('Comptences');
+  },
+  async GetAllCompStartingBy(query){
+    console.log(query.length);
+    query.length == 0 ? query = 'a' : query = query;
+    return await client().get(`Comptences/${query}`)
+  }
 };

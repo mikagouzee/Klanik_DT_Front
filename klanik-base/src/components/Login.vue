@@ -1,22 +1,5 @@
-  <!-- <template>
-<b-form inline>
-  <div class="login-box ">
- 
-        <div class="login" v-if="!loggedIn">
-            <router-link class="mr-sm-2" :to="{name:'register'}">Register</router-link>
-            <input   class="mb-2 mr-sm-2 mb-sm-0" v-model='username' type="text" placeholder="UserName">
-            <input   class="mb-2 mr-sm-2 mb-sm-0" v-model='username' type="text" placeholder="UserName">
-            <b-button variant="primary"   class="mb-2 mr-sm-2 mb-sm-0" @click="login" >Login</b-button>
-            <router-link   class="mb-2 mr-sm-2 mb-sm-0" :to="{name:'forgot'}">I forgot my password</router-link>
-        </div>
-        <div class="logout" v-if="loggedIn">
-             <b-button variant="primary" @click="logout">Log out</b-button>
-        </div>
-  </div>
-  </b-form>
-</template>-->
+
 <template >
-  <!-- Default form login -->
   <div class="ctnair">
     <div>&nbsp;</div>
     <div>
@@ -29,11 +12,11 @@
       <div class="text-center mt-4">
         <router-link class="mr-sm-2" :to="{name:'register'}">Register</router-link>
         <button class="btn btn-indigo" @click="login">Login</button>
+        <router-link class="mb-2 mr-sm-2 mb-sm-0" :to="{name:'forgot'}">I forgot my password</router-link>
       </div>
     </div>
     <div>&nbsp;</div>
   </div>
-  <!-- Default form login -->
 </template>
 
 <script>
@@ -55,22 +38,25 @@ export default {
     this.returnUrl = this.$route.query.returnUrl || "/";
   },
   async mounted() {
-    var tokenBearer = authHeader(); //should be "bearer myEncryptedToken"
-
+    var tokenBearer = authHeader();
     if (tokenBearer != undefined) {
       var myHeader = {
         "Content-Type": "application/json",
         Authorization: tokenBearer
       };
-
-      await authenticationService.connect(myHeader).then(
-        user => {
-          this.$router.push(this.returnUrl);
-        },
-        err => {
-          this.$toastr("error", err, "hello");
-        }
-      );
+      if (tokenBearer) {
+        await authenticationService.connect(myHeader).then(
+          user => {
+            this.$router.push(this.returnUrl);
+          },
+          err => {
+            //If the tokens exist but the status is 401 (Unauthorized) don't display 
+            //the err message.
+            if(err.response.status != 401)
+              this.$toastr("error", err, "hello");
+          }
+        );
+      }
     }
   },
   computed: {
@@ -86,7 +72,6 @@ export default {
   },
   methods: {
     async login() {
-      console.log("Ok");
       await authenticationService.login(this.loginModel).then(
         user => {
           this.$router.push(this.returnUrl);
@@ -112,12 +97,5 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-/* .box {
-  display: inline;
-}
-
-.login input {
-  max-width: 100px;
-} */
 </style>
 

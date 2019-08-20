@@ -8,12 +8,9 @@ export default {
   async register(registerModel) {
     console.log("Trying to register with", registerModel.username);
 
-    return await client()
+    return await  client()
       .post("/api/Account", registerModel)
-      .then(res => {
-        // console.log(res);
-        return res;
-      });
+     
   },
 
   //if he exists he needs to login. THIS SHOULD PROVIDE THE TOKEN.
@@ -108,8 +105,15 @@ export default {
     return formData;
   },
 
-  async getAllUsers() { 
-    return await client().get('api/Account/users').then(ok=>{return ok;}, ko=>console.log(ko));
+  async getAllUsers() {
+    return await client()
+      .get("api/Account/users")
+      .then(
+        ok => {
+          return ok;
+        },
+        ko => console.log(ko)
+      );
   },
 
   async getAllRoles() {
@@ -128,8 +132,7 @@ export default {
   async setRoleToUser(userId, selectedRole) {
     return await client()
       .post(`/api/account/SetRole/${userId}/${selectedRole}`)
-      .then(()=>{
-      });
+      .then(() => {});
   },
   async updateOptIn(id, optIn) {
     console.log(`Will update ${id} with optIn : ${optIn}`);

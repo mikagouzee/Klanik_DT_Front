@@ -1,30 +1,39 @@
 <template>
 <div id="app">
   <header>
-    <b-navbar type="light" variant="light">
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-navbar type="light" variant="light" toggleable="lg">
       <b-navbar-brand to="/">Klanik</b-navbar-brand>
-      <router-link v-if="(isAdmin || isRecruteur)" :to="{name:'konsultants'}">Konsultants</router-link>|
-      <router-link
-        v-if="isLogged && OptedIn && !HasProfile"
-        :to="{name:'konsultantCreation'}"
-      >Créer mon profil</router-link>|
-      <router-link
-        v-if="(isAdmin || isRecruteur) && OptedIn"
-        :to="{name:'administration'}"
-      >Administration</router-link>|
-      <!-- <button  v-if="isLogged" @click="details">See your profile</button> -->
-      <a v-if="isLogged && OptedIn && HasProfile" href="#" @click="details">Voir mon profil</a>
-      <!-- <router-link v-if="isLogged" :to="{name:'konsultantDetail', params:{konsultantId:currentUser.sub}}">Voir votre profil</router-link> | -->
-      <router-link v-if="isLogged" to="/gdpr">GDPR</router-link>
-
-      <!-- <button @click="log">Log Current User</button> -->
+      <b-navbar-toggle target="nav-menu-collapse"></b-navbar-toggle>
+      <b-collapse id="nav-menu-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item>
+            <router-link v-if="(isAdmin || isRecruteur)" :to="{name:'konsultants'}">Konsultants</router-link>
+          </b-nav-item>
+          <b-nav-item>
+            <router-link
+              v-if="isLogged && OptedIn && !HasProfile"
+              :to="{name:'konsultantCreation'}"
+            >Créer mon profil</router-link>
+          </b-nav-item>
+          <b-nav-item>
+            <router-link
+              v-if="(isAdmin || isRecruteur) && OptedIn"
+              :to="{name:'administration'}"
+            >Administration</router-link>
+          </b-nav-item>
+          <b-nav-item>
+            <a v-if="isLogged && OptedIn && HasProfile" href="#" @click="details">Voir mon profil</a>
+          </b-nav-item>
+          <b-nav-item>
+            <router-link v-if="isLogged" to="/gdpr">GDPR</router-link>
+          </b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
 
       <b-navbar-nav class="ml-auto">
         <b-nav-item right>
           <b-button v-if="isLogged" variant="danger" @click="logOut">Log-out</b-button>
-          <router-link v-if="!isLogged" :to="{name:'login'}">Log In </router-link>
-          <!-- <login></login> -->
+          <router-link v-if="!isLogged" :to="{name:'login'}">Log In</router-link>
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>

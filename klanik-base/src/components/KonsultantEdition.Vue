@@ -1,34 +1,34 @@
 <template>
   <div class="container">
     <div class="button-box">
-      <button @click="log">Log</button>
-      <button @click="update">Save</button>
+      <md-button  class="md-raised md-primary" @click="update">Save</md-button>
     </div>
 
     <div class="CV">
-      <section class="row-info">
-        <div class="section-title">
-          <h2>Summary</h2>
+      <section class>
+        <div class="Klanik-logo">
+          <img src="../assets/pictos/logo1.png" alt="logo" class="logo" />
+          <div class>
+            <div class="box-name form-group">
+              <label>Name :</label>
+              <input v-model="konsultant.name" placeholder="Name" class="form-control" />
+              <label>Surname :</label>
+              <input v-model="konsultant.surname" placeholder="Surname" class="form-control" />
+              <label>Function :</label>
+              <input v-model="konsultant.function" placeholder="e.g. Director" class="form-control" />
+              <label>Availability :</label>
+              <input
+                v-model="konsultant.availability"
+                placeholder="MM-YYYY"
+                pattern="[0-9]{2}-[0-9]{4}"
+                type="month"
+                class="form-control"
+              />
+            </div>
+          </div>
         </div>
 
-        <div class="section-content">
-          <div class="box-name">
-            <label>Name :</label>
-            <input v-model="konsultant.name" placeholder="Name" />
-            <br />
-            <label>Surname :</label>
-            <input v-model="konsultant.surname" placeholder="Surname" />
-            <br />
-          </div>
-
-          <div class="box-summary">
-            <label>Function :</label>
-            <input v-model="konsultant.function" placeholder="Function" />
-            <br />
-            <label>Availability :</label>
-            <input :value="konsultant.availability | toDate " placeholder="Available beginning" />
-          </div>
-        </div>
+        <div class="Klanik-titleBar">Klanik Consulting</div>
       </section>
 
       <section class="row-competences">
@@ -36,51 +36,115 @@
           <img src="../assets/pictos/competence.png" alt="comp-icon" align="top" />
           <h2>Competences</h2>
         </div>
-
-        <div class="section-content">
-          <div class="box-competences">
-            <div
-              class="existingComp"
-              v-for="comp in konsultant.competences.filter(x => !x.isDeleted)"
-              :key="comp.id"
-            >
-              <input v-model="comp.name" /> :
-              <input v-model.number="comp.rating" />
-              Include :
-              <input type="checkbox" v-model="comp.isRelevant" />
-              <button @click="removeFromList(comp, konsultant.competences)">X</button>
-            </div>
-
+        <div class="">
+          <div class="box box-competences">
             <div class="form">
-              <label>New competence :</label>
-              <input v-model="newCompetence.name" placeholder="Name" />
-              <br />
+              <label>Add a competence :</label>
+              <input v-model="newCompetence.name" placeholder="e.g. ASP.Net " class="form-control" />
               <label>Rating :</label>
-              <input v-model.number="newCompetence.rating" placeholder="Rating (from 1 to 5)" />
+              <div @mouseleave="showCurrentRating(0)">
+                <star-rating
+                  @current-rating="showCurrentRating"
+                  v-model="newCompetence.rating"
+                  active-color="black"
+                  :show-rating="false"
+                  v-bind:star-size="20"
+                ></star-rating>
+                {{ratingmsg}}
+              </div>
               <br />
               <button @click="addToList(newCompetence, konsultant.competences, 2)">Add</button>
+            </div>
+
+            <div class="existing">
+              <table class="skillTable1">
+                <tr
+                  v-for="thiscomp in firstHalfSkill.filter(x => !x.isDeleted)"
+                  :key="thiscomp.name"
+                >
+                  <td class="skill">{{thiscomp.name}}</td>
+                  <td class="skill">
+                    <star-rating
+                      v-model="thiscomp.rating"
+                      active-color="black"
+                      :show-rating="false"
+                      v-bind:star-size="10"
+                    ></star-rating>
+                  </td>
+                  <td class="skill">
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(thiscomp, konsultant.competences)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </td>
+                </tr>
+              </table>
+
+              <table class="skillTable2">
+                <tr
+                  v-for="thatcomp in secondHalfSkill.filter(x => !x.isDeleted)"
+                  :key="thatcomp.name"
+                >
+                  <td class="skill">{{thatcomp.name}}</td>
+                  <td class="skill">
+                    <star-rating
+                      v-model="thatcomp.rating"
+                      active-color="black"
+                      :show-rating="false"
+                      v-bind:star-size="10"
+                    ></star-rating>
+                  </td>
+                  <td class="skill">
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(thatcomp, konsultant.competences)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
 
           <div class="box-languages">
-            <h4>Languages :</h4>
-            <div
-              class="lang"
-              v-for="lang in konsultant.languages.filter(x => !x.isDeleted)"
-              :key="lang.id"
-            >
-              <input v-model="lang.name" /> :
-              <input type="number" v-model.number="lang.fluency" />
-              Include :
-              <input type="checkbox" v-model="lang.isRelevant" />
-              <button @click="removeFromList(lang, konsultant.languages)">X</button>
-            </div>
-
-            <div class="form">
-              <label>New language :</label>
-              <input v-model="otherLanguage.name" placeholder="Name" />
-              <input v-model.number="otherLanguage.fluency" placeholder="Fluency (from 1 to 5)" />
-              <button @click="addToList(otherLanguage, konsultant.languages, 2)">Add</button>
+            <label>Add a language :</label>
+            <input v-model="otherLanguage.name" placeholder="e.g. French" />
+            <select v-model="otherLanguage.fluency">
+              <option value="1">Beginner</option>
+              <option value="2">Scholar</option>
+              <option value="3">Technical</option>
+              <option value="4">Fluent</option>
+              <option value="5">Bilingual</option>
+            </select>
+            <button @click="addToList(otherLanguage, konsultant.languages, 2)">Add</button>
+            <div class="box box-languages-table">
+              <md-table>
+                <md-table-row
+                  v-for="l in konsultant.languages.filter(x => !x.isDeleted)"
+                  :key="l.name"
+                >
+                  <md-table-cell>{{l.name}}</md-table-cell>
+                  <md-table-cell>{{l.fluency | lngFilter}}</md-table-cell>
+                  <md-table-cell>
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(l, konsultant.languages)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </md-table-cell>
+                </md-table-row>
+              </md-table>
+              <div class="box box-legend">
+                &#9733; I have some competences
+                <br />&#9733;&#9733; I know how to do but I need support
+                <br />&#9733;&#9733;&#9733; Good level
+                <br />&#9733;&#9733;&#9733;&#9733; Very good level / mastering the topic
+                <br />&#9733;&#9733;&#9733;&#9733;&#9733; Subject Matter Expert
+              </div>
             </div>
           </div>
         </div>
@@ -93,28 +157,45 @@
         </div>
 
         <div class="section-content">
-          <div
-            class="box-edu"
-            v-for="edu in konsultant.educations.filter(x => !x.isDeleted)"
-            :key="edu.id"
-          >
-            <!-- From <v-text-field :value="edu.startDate | toDate" @input="value => edu.startDate = value"></v-text-field> -->
-            From
-            <input :value="edu.startDate  | toDate" />
-            to
-            <input :value="edu.endDate | toDate" /> :
-            <input v-model="edu.name" />
-            Include :
-            <input type="checkbox" v-model="edu.isRelevant" />
-            <button @click="removeFromList(edu, konsultant.educations)">X</button>
-          </div>
-
           <div class="form">
             <label>New education :</label>
             <input v-model="otherEducation.name" placeholder="Name" />
-            <input v-model="otherEducation.startDate" placeholder="Starting date" type="date" />
-            <input v-model="otherEducation.endDate" placeholder="End date" type="date" />
+            <input v-model="otherEducation.startDate" placeholder="Starting date" type="month" />
+            <input v-model="otherEducation.endDate" placeholder="End date" type="month" />
             <button @click="addToList(otherEducation, konsultant.educations, 3)">Add</button>
+          </div>
+          <md-table>
+            <md-table-row
+              v-for="edu in konsultant.educations.filter(x => !x.isDeleted)"
+              :key="edu.id"
+            >
+              <md-table-cell>
+                From
+                <input :value="edu.startDate" type="month" />
+              </md-table-cell>
+              <md-table-cell>
+                to
+                <input :value="edu.endDate" />
+              </md-table-cell>
+              <md-table-cell>
+                <input v-model="edu.name" />
+              </md-table-cell>
+              <md-table-cell>
+                Include :
+                <input type="checkbox" v-model="edu.isRelevant" />
+              </md-table-cell>
+              <md-table-cell>
+                <md-button
+                  class="md-icon-button"
+                  @click="removeFromList(edu, konsultant.educations)"
+                >
+                  <md-icon>remove_circle_outline</md-icon>
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
+          </md-table>
+          <div>
+            <!-- <button @click="removeFromList(edu, konsultant.educations)">X</button> -->
           </div>
         </div>
       </section>
@@ -126,20 +207,6 @@
         </div>
 
         <div class="section-content">
-          <div
-            class="box-certif"
-            v-for="cert in konsultant.certificates.filter(x => !x.isDeleted)"
-            :key="cert.id"
-          >
-            <input v-model="cert.name" /> : obtained on
-            <input :value="cert.obtension | toDate" />
-            <br />Valid until
-            <input :value="cert.endOfValidity | toDate" />
-            Include :
-            <input type="checkbox" v-model="cert.isRelevant" />
-            <button @click="removeFromList(cert, konsultant.certificates)">X</button>
-          </div>
-
           <div class="form">
             <label>New certificate :</label>
 
@@ -149,6 +216,37 @@
 
             <button @click="addToList(otherCertificate, konsultant.certificates, 3)">Add</button>
           </div>
+          <md-table>
+            <md-table-row
+              class="box-certif"
+              v-for="cert in konsultant.certificates.filter(x => !x.isDeleted)"
+              :key="cert.id"
+            >
+              <md-table-cell>
+                <input v-model="cert.name" /> obtained on
+                <input :value="cert.obtension | toDate" />
+              </md-table-cell>
+
+              <md-table-cell>
+                Valid until
+                <input :value="cert.endOfValidity | toDate" />
+              </md-table-cell>
+
+              <md-table-cell>
+                Include
+                <input type="checkbox" v-model="cert.isRelevant" />
+              </md-table-cell>
+
+              <md-table-cell>
+                <md-button
+                  class="md-icon-button"
+                  @click="removeFromList(cert, konsultant.certificates)"
+                >
+                  <md-icon>remove_circle_outline</md-icon>
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
+          </md-table>
         </div>
       </section>
 
@@ -177,7 +275,13 @@
             />
             <input v-model="otherProfessionalExperience.endDate" placeholder="ended on" type="date" />
             <input v-model="otherProfessionalExperience.customer" placeholder="Company" />
-            <input v-model="otherProfessionalExperience.summary" placeholder="summary" />
+            <div id="cke5prof">
+              <ckeditor
+                :editor="editor"
+                v-model="otherProfessionalExperience.summary"
+                :config="editorConfig"
+              ></ckeditor>
+            </div>
             <button
               @click="addToList(otherProfessionalExperience, konsultant.professionalExperiences,5)"
             >Add</button>
@@ -193,6 +297,11 @@
         </div>
 
         <div class="section-content">
+          <div>
+            <span
+              style="font-style:italic"
+            >NB: by filling in this section, you agree that you have received the permission of the people identified that they may be contacted for reasons relating to your employment.</span>
+          </div>
           <div
             class="box-refer"
             v-for="ref in konsultant.professionalReferences.filter(x => !x.isDeleted)"
@@ -207,39 +316,27 @@
             <button @click="removeFromList(ref, konsultant.professionalReferences)">X</button>
           </div>
 
-          <div class="form">
-            <label>Name :</label>
+          <div class=" refes">
             <input v-model="otherReference.name" placeholder="Name" />
-            <br />
-            <label>Surname :</label>
             <input v-model="otherReference.surname" placeholder="Surname" />
-            <br />
-            <label>Function :</label>
             <input v-model="otherReference.function" placeholder="Function" />
-            <br />
-            <label>Mail :</label>
             <input v-model="otherReference.mail" placeholder="Mail" type="email" />
-            <br />
-            <label>Phone :</label>
             <input v-model="otherReference.phone" placeholder="Phone" type="tel" />
-            <br />
-            <label>Company :</label>
             <input v-model="otherReference.company" placeholder="Company" />
-            <br />
             <button @click="addToList(otherReference, konsultant.professionalReferences, 6)">Add</button>
           </div>
         </div>
       </section>
     </div>
+     <md-button  class="md-raised md-success" @click="update">Save</md-button>
   </div>
 </template>
 
 <script>
 import KlanikApi from "@/services/KlanikService";
-
 import professionalExperience from "./ProfessionalExperience";
-
-import { dateFilter } from "../tools/filters";
+import { dateFilter, lngFilter } from "../tools/filters";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default {
   name: "KonsultantEdition",
@@ -247,10 +344,16 @@ export default {
     professionalExperience: professionalExperience
   },
   filters: {
-    toDate: dateFilter
+    toDate: dateFilter,
+    lngFilter
   },
   data() {
     return {
+      editor: ClassicEditor,
+      editorConfig: {
+        toolbar: ["bold", "italic", "bulletedList", "numberedList"],
+        placeholder: "Summary"
+      },
       konsultant: {
         competences: [],
         languages: [],
@@ -301,7 +404,8 @@ export default {
         id: "",
         isRelevant: true,
         isDeleted: false
-      }
+      },
+      ratingmsg: ""
     };
   },
   async created() {
@@ -363,6 +467,29 @@ export default {
     }
   },
   methods: {
+    showCurrentRating: function(rating) {
+      switch (rating) {
+        case 1:
+          this.ratingmsg = "I have some competences";
+          break;
+        case 2:
+          this.ratingmsg = "I know how to do but I need support ";
+          break;
+        case 3:
+          this.ratingmsg = "Good level ";
+          break;
+        case 4:
+          this.ratingmsg = "Very good level / mastering the topic ";
+          break;
+        case 5:
+          this.ratingmsg = "Subject Matter Expert";
+          break;
+
+        default:
+          this.ratingmsg = "";
+          break;
+      }
+    },
     async save() {
       //console.log("Saving " + this.konsultant.name);
       this.$store.dispatch("SelectKonsultant", this.konsultant);
@@ -404,7 +531,6 @@ export default {
   watch: {
     konsultant: {
       handler(val) {
-        console.log("konsultant changed");
         this.$store.dispatch("SelectKonsultant", this.konsultant);
       },
       deep: true
@@ -467,7 +593,30 @@ export default {
 };
 </script>
 
+
 <style>
+.wrapper {
+  display: block;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 5%;
+}
+.gridedtable {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.gdtrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: ghostwhite;
+  grid-column-gap: 5px;
+}
+#cke5prof {
+  margin-top: 5px;
+}
+.ck-editor__editable {
+  min-height: 150px;
+}
 @font-face {
   font-family: "NewJuneBold";
   src: url("../assets/fonts/NewJune-Bold.otf");
@@ -483,10 +632,49 @@ export default {
   src: url("../assets/fonts/TitilliumWeb-Bold.ttf");
 }
 
-.CV {
-  background-color: mintcream;
-  display: grid;
+.cv {
+  display: inline-grid;
   font-family: Titillium;
+  text-align: left;
+  border: 1px solid green;
+}
+
+.Klanik-titleBar {
+  /* grid-column: 2;
+  grid-row: 2; */
+  font-family: NewJuneBold;
+  font-size: 50px;
+  background-color: #041d36;
+  color: white;
+  text-align: right;
+  padding: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  align-self: end;
+  /* max-height:75px; */
+}
+.Klanik-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.box-infos {
+  padding-top: 5px;
+  margin-left: 50px;
+  display: grid;
+  font-family: Titillium-title;
+
+  /*grid-template-columns: 50% 50%;
+  font-family: Titillium-title;
+
+  /* border:1px dashed blue; */
+}
+
+.box-name {
+  display: grid;
+  grid-column-gap: 5px;
+  grid-template-columns: 25% 75%;
+  margin-bottom: 5px;
 }
 
 section {
@@ -514,7 +702,7 @@ section {
 
 .section-title h2 {
   grid-column: 2;
-
+  text-align: center;
   align-self: end;
   padding: -5px;
   padding-left: 10px;
@@ -524,92 +712,126 @@ section {
 
 .section-content {
   margin-left: 50px;
-  grid-row-gap: 30px;
-}
-
-.row-info .section-content {
-  display: grid;
-  grid-template-columns: 50%50%;
-}
-
-.box-name {
-  grid-column: 1;
-  font-size: 150%;
-
-  display: grid;
-  grid-template-columns: 30% 70%;
-}
-
-.box-name label {
-  grid-column: 1;
-}
-.box-name input {
-  grid-column: 2;
-  justify-self: left;
-}
-
-.box-summary {
-  grid-column: 2;
-  font-size: 125%;
-
-  display: grid;
-  grid-template-columns: 30% 70%;
-}
-
-.box-summary label {
-  grid-column: 1;
-}
-
-box-summary input {
-  grid-column: 2;
-  justify-self: left;
 }
 
 .row-competences .section-content {
   display: grid;
-
-  grid-template-columns: 50% 50%;
+  /* grid-template-columns: 50% 50%; */
   grid-template-rows: auto;
-
-  /* grid-gap:15px; */
+  grid-row-gap: 15px;
+  grid-column-gap: 15px;
   justify-content: stretch;
   align-items: left;
 }
 
 .box-competences {
-  /* background-color:aquamarine;    */
-  grid-column: 1 / span 2;
-  grid-row: 1;
-  grid-row-gap: 5px;
+  /* grid-column: 1 / span 2; display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: auto; */
+  justify-self: stretch;
+}
+.box-languages-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.box-references {
+  display: grid;
+  grid-template-rows: auto;
+}
+
+.formcomp {
+  /* grid-column: 1; */
+  /* grid-row: 1; */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 0.5em;
+}
+.refes {
+  margin-top: 10px;
   display: grid;
   grid-template-columns: 50% 50%;
+  grid-gap: 0.5em;
+}
+.form label {
+  grid-column: 1;
+}
+.form input {
+  grid-column: 2;
+  max-width: auto;
+}
 
-  justify-self: stretch;
+.existing {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+
+  display: grid;
+  columns: 50% 50%;
+}
+
+td.skill {
+  background-color: ghostwhite;
+  padding: 3px;
+  text-align: center;
+}
+
+.skillTable1 {
+  grid-column: 1;
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.skillTable2 {
+  grid-column: 2;
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
 .box-languages {
   grid-column: 1;
-  display: grid;
-  grid-template-rows: auto;
-  grid-row-gap: 5px;
+  grid-row: 2;
+  justify-self: stretch;
 }
 
-.form {
-  margin-top: 5px;
-  grid-column: 1;
-
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-row-gap: 5px;
+.table-header {
+  background-color: #1d3652;
+  color: white;
+  margin: 5px;
+  padding: 5px;
+  font-style: bold;
 }
 
-.form label,
-button {
-  grid-column: 1;
+.table {
+  border-collapse: collapse;
+  padding: 5px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+.table td,
+.table th {
+  border: 1px solid lightgrey;
+  width: auto;
+}
+.table tr:first-child th {
+  border-top: 0;
 }
 
-.form input {
-  grid-column: 2;
-  padding: 3px;
+.table tr td:first-child,
+.table tr th:first-child {
+  border-left: 0;
+}
+.table tr td:last-child,
+.table tr th:last-child {
+  border-right: 0;
 }
 </style>
+
+

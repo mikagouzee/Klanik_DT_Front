@@ -4,7 +4,7 @@
       <b-button-group>
         <md-button class="md-raised md-primary" @click="getPdf">Pdf</md-button>
         <md-button class="md-raised md-primary" @click="edit">Edit</md-button>
-        <md-button class="md-raised md-primary" @click="log">Log</md-button>
+        <!-- <md-button class="md-raised md-primary" @click="log">Log</md-button> -->
         <md-button class="md-raised md-primary" @click="getWord">Word</md-button>
       </b-button-group>
     </div>
@@ -151,7 +151,7 @@
               <br />
               Role : {{prof.position}}
               <br />
-              {{prof.summary}}
+              <span v-html="prof.summary"></span>
               <br />
               <h5>Details of Accomplishments :</h5>
               <ul>

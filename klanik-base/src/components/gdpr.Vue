@@ -271,7 +271,7 @@
 
    
      <div>
-      <b-button variant="light" v-on:click="SetOptIn()">Accept</b-button>
+      <b-button variant="success" v-on:click="SetOptIn()">Accept</b-button>
       <!-- <input
         type="checkbox"
         name="gprdOptIn"

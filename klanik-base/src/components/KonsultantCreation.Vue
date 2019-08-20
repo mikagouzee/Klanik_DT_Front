@@ -3,272 +3,456 @@
     <div class="box buttons">
       <button @click="save">Save</button>
       <button v-if="saved" @click="details">See your profile</button>
-
-      <button @click="log">Log context</button>
     </div>
-      <h1>Konsultant</h1>
+    <h1>Konsultant</h1>
 
     <div class="cv">
-
-      <section class="box-header">
+      <section class>
         <div class="Klanik-logo">
-          <img src="../assets/pictos/logo1.png" alt="logo" class="logo">
-        </div>
+          <img src="../assets/pictos/logo1.png" alt="logo" class="logo" />
+          <!-- </div> -->
 
-        <div class="box-infos">
-          <div class="box-name">
-            <label>Name :</label>
-            <input v-model="konsultant.name" placeholder="Name">
-            <br>
-            <label>Surname :</label>
-            <input v-model="konsultant.surname" placeholder="Surname">
-            <br>
+          <div class>
+            <div class="box-name form-group">
+              <label>Name :</label>
+              <input v-model="konsultant.name" placeholder="Name" class="form-control" />
+              <label>Surname :</label>
+              <input v-model="konsultant.surname" placeholder="Surname" class="form-control" />
+              <label>Function :</label>
+              <input v-model="konsultant.function" placeholder="e.g. Director" class="form-control" />
+              <label>Availability :</label>
+              <input
+                v-model="konsultant.availability"
+                placeholder="MM-YYYY"
+                pattern="[0-9]{2}-[0-9]{4}"
+                type="month"
+                class="form-control"
+              />
+              <label>Mobility</label>
+              <multiselect
+                v-model="value"
+                :options="mobilityList"
+                :multiple="true"
+                group-values="bus"
+                group-label="country"
+                :group-select="true"
+                placeholder="Type to search"
+                track-by="name"
+                label="name"
+              >
+                <span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+              </multiselect>
+            </div>
           </div>
-          
-          <div class="box-summary">
-            <label>Function :</label>
-            <input v-model="konsultant.function" placeholder="Function">
-            <br>
-            <label>Availability :</label>
-            <input v-model="konsultant.availability" placeholder="Available beginning" type="date">
-          </div>      
         </div>
 
-        <div class="Klanik-titleBar">
-          Klanik Consulting
-        </div>
-        
+        <div class="Klanik-titleBar">Klanik Consulting</div>
       </section>
 
       <section class="box row-competences">
         <div class="section-title">
-          <img src="../assets/pictos/competence.png" alt="comp-icon" align="top">
-          <h2> Competences</h2>
+          <img src="../assets/pictos/competence.png" alt="comp-icon" align="top" />
+          <h2>Competences</h2>
         </div>
 
         <div class="section-content">
           <div class="box box-competences">
             <div class="form">
-              <label>New competence :</label>
-              <input v-model="newCompetence.name" placeholder="Name"><br>
+              <label>Add a competence :</label>
+              <multiselect
+                v-if="availablecompetences"
+                v-model="newCompetence.name"
+                tag-placeholder="Add this as new tag"
+                placeholder="Search or add a tag"
+                :options="availablecompetences"
+                :taggable="true"
+                @tag="addTag"
+                :loading="isLoading"
+                :searchable="true"
+                :internal-search="false"
+                :options-limit="10"
+                @search-change="asyncFind"
+              ></multiselect>
               <label>Rating :</label>
-              <input type="number" v-model="newCompetence.rating" placeholder="Rating (from 1 to 5)"><br>
+              <div @mouseleave="showCurrentRating(0)">
+                <star-rating
+                  @current-rating="showCurrentRating"
+                  v-model="newCompetence.rating"
+                  active-color="black"
+                  :show-rating="false"
+                  v-bind:star-size="20"
+                ></star-rating>
+                {{ratingmsg}}
+              </div>
               <button @click="addToList(newCompetence, konsultant.competences, 2)">Add</button>
             </div>
 
             <div class="existing">
-              <table class="skillTable1"> 
-                <tr v-for="thiscomp in firstHalfSkill" :key="thiscomp.name">
+              <table class="skillTable1">
+                <tr
+                  v-for="thiscomp in firstHalfSkill.filter(x => !x.isDeleted)"
+                  :key="thiscomp.name"
+                >
                   <td class="skill">{{thiscomp.name}}</td>
-                  <td class="skill">{{thiscomp.rating}}</td>
-                  <td class="skill"><button @click="removeFromList(thiscomp, konsultant.competences)" >X</button></td>
+                  <td class="skill">
+                    <star-rating
+                      v-model="thiscomp.rating"
+                      active-color="black"
+                      :show-rating="false"
+                      v-bind:star-size="10"
+                    ></star-rating>
+                  </td>
+                  <td class="skill">
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(thiscomp, konsultant.competences)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </td>
                 </tr>
               </table>
-                          
+
               <table class="skillTable2">
-                <tr v-for="thatcomp in secondHalfSkill" :key="thatcomp.name">
+                <tr
+                  v-for="thatcomp in secondHalfSkill.filter(x => !x.isDeleted)"
+                  :key="thatcomp.name"
+                >
                   <td class="skill">{{thatcomp.name}}</td>
-                  <td class="skill">{{thatcomp.rating}}</td>
-                  <td class="skill"><button @click="removeFromList(thatcomp, konsultant.competences)" >X</button></td>
+                  <td class="skill">
+                    <star-rating
+                      v-model="thatcomp.rating"
+                      active-color="black"
+                      :show-rating="false"
+                      v-bind:star-size="10"
+                    ></star-rating>
+                  </td>
+                  <td class="skill">
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(thatcomp, konsultant.competences)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </td>
                 </tr>
               </table>
             </div>
           </div>
 
           <div class="box box-languages">
-              <label>New language :</label>
-              <input v-model="otherLanguage.name" placeholder="Name">
-              <input type="number" v-model="otherLanguage.fluency" placeholder="Fluency (from 1 to 5)">
-              <button @click="addToList(otherLanguage, konsultant.languages, 2)">Add</button>
-
-              <table>
-                  <tr v-for="l in konsultant.languages" :key="l.name">
-                      <td>{{l.name}}</td>
-                      <td>{{l.fluency}}</td>
-                      <td><button @click="removeFromList(l, konsultant.languages)" >X</button></td>
-                  </tr>
-              </table>
-
+            <label>Add a language :</label>
+            <input v-model="otherLanguage.name" placeholder="e.g. French" />
+            <select v-model="otherLanguage.fluency">
+              <option value="1">Beginner</option>
+              <option value="2">Scholar</option>
+              <option value="3">Technical</option>
+              <option value="4">Fluent</option>
+              <option value="5">Bilingual</option>
+            </select>
+            <button @click="addToList(otherLanguage, konsultant.languages, 2)">Add</button>
+            <div class="box box-languages-table">
+              <md-table>
+                <md-table-row
+                  v-for="l in konsultant.languages.filter(x => !x.isDeleted)"
+                  :key="l.name"
+                >
+                  <md-table-cell>{{l.name}}</md-table-cell>
+                  <md-table-cell>{{l.fluency | lngFilter}}</md-table-cell>
+                  <md-table-cell>
+                    <md-button
+                      class="md-icon-button"
+                      @click="removeFromList(l, konsultant.languages)"
+                    >
+                      <md-icon>remove_circle_outline</md-icon>
+                    </md-button>
+                  </md-table-cell>
+                </md-table-row>
+              </md-table>
+              <div class="box box-legend">
+                &#9733; I have some competences
+                <br />&#9733;&#9733; I know how to do but I need support
+                <br />&#9733;&#9733;&#9733; Good level
+                <br />&#9733;&#9733;&#9733;&#9733; Very good level / mastering the topic
+                <br />&#9733;&#9733;&#9733;&#9733;&#9733; Subject Matter Expert
+              </div>
+            </div>
           </div>
-
-          <div class="box box-legend">
-              « I have some competences <br>
-              «« I know how to do but I need support <br>
-              ««« Good level <br>
-              «««« Very good level / mastering the topic <br>
-              ««««« Subject Matter Expert 
-          </div>
-
         </div>
-
-    
       </section>
 
       <section class="box row-education">
-          <div class="section-title">
-            <img src="../assets/pictos/education.png" alt="edu-icon"><h2>Education</h2>
-          </div>
-      
-          <div class="section-content">
-            <label>New education :</label>
-            <input v-model="otherEducation.name" placeholder="Name">
-            <input v-model="otherEducation.startDate" placeholder="Starting date" type="date">
-            <input v-model="otherEducation.endDate" placeholder="End date" type="date">
-            <button @click="addToList(otherEducation, konsultant.educations, 3)">Add</button>
+        <div class="section-title">
+          <img src="../assets/pictos/education.png" alt="edu-icon" />
+          <h2>Education</h2>
+        </div>
 
-            <table v-if="konsultant.educations !=null && konsultant.educations.length">
-              <tr v-for="e in konsultant.educations" :key="e.name">
-                <td> {{e.startDate}} to {{e.endDate}}</td>
-                <td>{{e.name}}</td> 
-                <td><button @click="removeFromList(e, konsultant.educations)" >X</button></td>
+        <div class="section-content">
+          <label>Add an education :</label>
+          <input v-model="otherEducation.name" placeholder="e.g. Master in computer science" />
+          <input
+            v-model="otherEducation.startDate"
+            placeholder="Starting date"
+            type="month"
+            pattern="[0-9]{4}"
+          />
+          <input
+            v-model="otherEducation.endDate"
+            placeholder="End date"
+            type="month"
+            pattern="[0-9]{4}"
+          />
+          <button @click="addToList(otherEducation, konsultant.educations, 3)">Add</button>
 
-              </tr>
-            </table>
-          </div>
-
+          <md-table>
+            <md-table-row
+              v-for="edu in konsultant.educations.filter(x => !x.isDeleted)"
+              :key="edu.id"
+            >
+              <md-table-cell>
+                From
+                <input :value="edu.startDate" type="month" />
+              </md-table-cell>
+              <md-table-cell>
+                to
+                <input :value="edu.endDate" />
+              </md-table-cell>
+              <md-table-cell>
+                <input v-model="edu.name" />
+              </md-table-cell>
+              <md-table-cell>
+                Include :
+                <input type="checkbox" v-model="edu.isRelevant" />
+              </md-table-cell>
+              <md-table-cell>
+                <md-button
+                  class="md-icon-button"
+                  @click="removeFromList(edu, konsultant.educations)"
+                >
+                  <md-icon>remove_circle_outline</md-icon>
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
+          </md-table>
+        </div>
       </section>
 
       <section class="box row-certificate">
         <div class="section-title">
-          <img src="../assets/pictos/certificate.png" alt="cert-icon"><h2>Certificates/Clearance</h2>
+          <img src="../assets/pictos/certificate.png" alt="cert-icon" />
+          <h2>Certificates/Clearance</h2>
         </div>
-      
 
         <div class="section-content">
-          <label>
-            New certificate :
-          </label>
+          <label>Add a certificate :</label>
 
-          <input v-model="otherCertificate.name" placeholder="Name">
-          <input v-model="otherCertificate.startDate" placeholder="Starting Date" type="date">
-          <input v-model="otherCertificate.EndOfValidity" placeholder="End date" type="date">
+          <input v-model="otherCertificate.name" placeholder="e.g. Scrum" />
+          <input
+            v-model="otherCertificate.startDate"
+            placeholder="Obtained on (year)"
+            type="month"
+            pattern="[0-9]{4}"
+          />
+          <!-- <input v-model="otherCertificate.EndOfValidity" placeholder="End date" type="date" /> -->
 
           <button @click="addToList(otherCertificate, konsultant.certificates, 3)">Add</button>
-              
-          <table v-if="konsultant.certificates != null && konsultant.certificates.length">
-            <tr v-for="c in konsultant.certificates" :key="c.name">
-              <td>{{c.startDate.substring(0,10)}}</td>
-              <td>{{c.name}}</td>
-              <td><button @click="removeFromList(c, konsultant.certificates)" >X</button></td>
 
-            </tr>
-          </table>
-          
+          <md-table>
+            <md-table-row
+              class="box-certif"
+              v-for="cert in konsultant.certificates.filter(x => !x.isDeleted)"
+              :key="cert.id"
+            >
+              <md-table-cell>
+                <input v-model="cert.name" /> obtained on
+                <input :value="cert.obtension | toDate" />
+              </md-table-cell>
+
+              <md-table-cell>
+                Valid until
+                <input :value="cert.endOfValidity | toDate" />
+              </md-table-cell>
+
+              <md-table-cell>
+                Include
+                <input type="checkbox" v-model="cert.isRelevant" />
+              </md-table-cell>
+
+              <md-table-cell>
+                <md-button
+                  class="md-icon-button"
+                  @click="removeFromList(cert, konsultant.certificates)"
+                >
+                  <md-icon>remove_circle_outline</md-icon>
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
+          </md-table>
         </div>
-        
       </section>
 
       <section class="box row-professionalExperience">
-          <div class="section-title">
-            <img src="../assets/pictos/experience.png" alt="exp-icon"><h2>Professional Experiences</h2>
-          </div>
+        <div class="section-title">
+          <img src="../assets/pictos/experience.png" alt="exp-icon" />
+          <h2>Professional Experiences</h2>
+        </div>
 
         <div class="section-content">
           <h4>Add Professional Experience</h4>
-            <input v-model="otherProfessionalExperience.position" placeholder="Position">
-            <input v-model="otherProfessionalExperience.startDate" placeholder="started on" type="date">
-            <input v-model="otherProfessionalExperience.endDate" placeholder="ended on" type="date">
-            <input v-model="otherProfessionalExperience.Customer" placeholder="Company">
-            <input v-model="otherProfessionalExperience.summary" placeholder="summary">
-          <button @click="addToList(otherProfessionalExperience, konsultant.professionalExperiences,5)">Add</button>
-          <br>
-          
-          <div v-if="konsultant.professionalExperiences!=null && konsultant.professionalExperiences.length">
+          <input v-model="otherProfessionalExperience.position" placeholder="Position" />
+          <input
+            v-model="otherProfessionalExperience.startDate"
+            placeholder="MM-YYYY"
+            pattern="[0-9]{2}-[0-9]{4}"
+            type="month"
+          />
+          <input
+            v-model="otherProfessionalExperience.endDate"
+            placeholder="MM-YYYY"
+            pattern="[0-9]{2}-[0-9]{4}"
+            type="month"
+          />
+          <input v-model="otherProfessionalExperience.Customer" placeholder="Company" />
+          <div id="cke5prof">
+            <ckeditor
+              :editor="editor"
+              v-model="otherProfessionalExperience.summary"
+              :config="editorConfig"
+            ></ckeditor>
+          </div>
+          <button
+            @click="addToList(otherProfessionalExperience, konsultant.professionalExperiences,5)"
+          >Add</button>
+          <br />
+
+          <div
+            v-if="konsultant.professionalExperiences!=null && konsultant.professionalExperiences.length"
+          >
             <professionalExperience
               v-for="pe in konsultant.professionalExperiences"
               v-bind:key="pe.position"
-              v-bind:professionalExperience="pe">
-            </professionalExperience>
-
+              v-bind:professionalExperience="pe"
+            ></professionalExperience>
           </div>
-
-        </div>      
-
+        </div>
       </section>
 
       <section class="box row-professionalReference">
         <div class="section-title">
-          <img src="../assets/pictos/reference.png" alt="reference-icon"> <h2>References</h2>
+          <img src="../assets/pictos/reference.png" alt="reference-icon" />
+          <h2>References</h2>
         </div>
 
         <div class="section-content box-references">
-          <div class="form">
-            <label>Name :</label> <input v-model="otherReference.name" placeholder="Name"> <br>
-            <label>Surname :</label> <input v-model="otherReference.surname" placeholder="Surname"> <br>
-            <label>Function :</label> <input v-model="otherReference.function" placeholder="Function"> <br>
-            <label>Mail :</label> <input v-model="otherReference.mail" placeholder="Mail" type="email"> <br>
-            <label>Phone :</label> <input v-model="otherReference.phone" placeholder="Phone" type="tel"> <br>
-            <label>Company :</label> <input v-model="otherReference.company" placeholder="Company"> <br>
-            <button @click="addToList(otherReference, konsultant.professionalReferences, 6)" >Add</button>
+          <div>
+            <span
+              style="font-style:italic"
+            >NB: by filling in this section, you agree that you have received the permission of the people identified that they may be contacted for reasons relating to your employment.</span>
+          </div>
+          <div class="refes">
+            <input v-model="otherReference.name" placeholder="Name" />
+            <input v-model="otherReference.surname" placeholder="Surname" />
+            <input v-model="otherReference.function" placeholder="Function" />
+            <input v-model="otherReference.mail" placeholder="Mail" type="email" />
+            <input v-model="otherReference.phone" placeholder="Phone" type="tel" />
+            <input v-model="otherReference.company" placeholder="Company" />
+            <button @click="addToList(otherReference, konsultant.professionalReferences, 6)">Add</button>
           </div>
 
           <ul>
             <li v-for="ref in konsultant.professionalReferences" :key="ref.name">
               {{ref.surname}}, {{ref.name}}, {{ref.function}}, {{ref.mail}}, {{ref.phone}}, {{ref.company}}
-              <button @click="removeFromList(ref, konsultant.professionalReferences)">X</button>
+              <button
+                @click="removeFromList(ref, konsultant.professionalReferences)"
+              >X</button>
             </li>
           </ul>
-
         </div>
-
       </section>
-
     </div>
-
   </div>
-
 </template>
 
 <script>
 import KlanikApi from "@/services/KlanikService";
+import Multiselect from "vue-multiselect";
 
 import professionalExperience from "./ProfessionalExperience";
+import { lngFilter } from "../tools/filters";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default {
   name: "konsultantCreation",
   components: {
-    professionalExperience: professionalExperience
+    professionalExperience: professionalExperience,
+    Multiselect
+  },
+  filters: {
+    lngFilter: lngFilter
   },
   data() {
     return {
+      editor: ClassicEditor,
+      editorConfig: {
+        toolbar: ["bold", "italic", "bulletedList", "numberedList"],
+        placeholder: "Summary"
+      },
+      isLoading: false,
+      ratingmsg: "",
       ready: false,
-
-      saved : false,
-      currentId: '',
+      availablecompetences: [],
+      saved: false,
+      currentId: "",
 
       konsultant: {
-        id: '',
+        id: "",
         competences: [],
         languages: [],
         educations: [],
         certificates: [],
         professionalExperiences: [],
-        professionalReferences:[],
-        optIn : false
+        professionalReferences: [],
+        optIn: false
       },
-    
+
       newCompetence: {
-        isRelevant:true,
+        isRelevant: true
       },
-      otherLanguage: {        
-        isRelevant:true,
+      otherLanguage: {
+        isRelevant: true
       },
       otherEducation: {
-        isRelevant:true,
+        isRelevant: true
       },
       otherCertificate: {
-        isRelevant:true,
+        isRelevant: true
       },
       otherProfessionalExperience: {
-        isRelevant:true,
+        isRelevant: true,
         accomplishments: [],
         technicalEnvironments: []
       },
-      otherReference:{}
-    }
+      otherReference: {},
+      mobilityList: [
+        {
+          country: "Belgique",
+          bus: [{ name: "Bruxelles" }]
+        },
+        {
+          country: "France",
+          bus: [{ name: "Paris" }, { name: "Marseille" }]
+        }
+      ],
+      value: []
+    };
   },
   mounted() {
-    this.konsultant.optIn =  this.$store.getters.GetOptIn;
+    this.konsultant.optIn = this.$store.getters.GetOptIn;
+    KlanikApi.GetAllCompStartingBy('').then(c => {
+      c.data.forEach(element => {
+        this.availablecompetences.push(element.name);
+      });
+    });
   },
   computed: {
     competenceList() {
@@ -286,98 +470,157 @@ export default {
     professionalExperienceList() {
       return this.konsultant.professionalExperiences;
     },
-    referencesList(){
+    referencesList() {
       return this.konsultant.professionalReferences;
-    },    
-    firstHalfSkill(){
+    },
+    firstHalfSkill() {
       let firstHalf = [];
-      
-      for(let i= 0; i < Math.round(this.konsultant.competences.length/2); i++){
+
+      for (
+        let i = 0;
+        i < Math.round(this.konsultant.competences.length / 2);
+        i++
+      ) {
         firstHalf.push(this.konsultant.competences[i]);
       }
       return firstHalf;
     },
-    secondHalfSkill(){
+    secondHalfSkill() {
       let secondHalf = [];
 
-      for(let i= Math.round(this.konsultant.competences.length/2); i < this.konsultant.competences.length; i++){
+      for (
+        let i = Math.round(this.konsultant.competences.length / 2);
+        i < this.konsultant.competences.length;
+        i++
+      ) {
         secondHalf.push(this.konsultant.competences[i]);
       }
       return secondHalf;
     }
-
   },
   methods: {
-    log(){
-       console.log( this.$store.getters)
-      console.log( this.$store.getters.GetOptIn);
-      console.log(JSON.stringify(this.konsultant, null, 4));
-    },
+    showCurrentRating: function(rating) {
+      switch (rating) {
+        case 1:
+          this.ratingmsg = "I have some competences";
+          break;
+        case 2:
+          this.ratingmsg = "I know how to do but I need support ";
+          break;
+        case 3:
+          this.ratingmsg = "Good level ";
+          break;
+        case 4:
+          this.ratingmsg = "Very good / mastering the topic ";
+          break;
+        case 5:
+          this.ratingmsg = "Subject Matter Expert";
+          break;
 
-    async save() {
-      //console.log("Saving " + this.konsultant.name);
-      this.konsultant.id = this.$store.getters.currentUser.sub;
-      await KlanikApi.createKonsultant(this.konsultant)
-        .then(
-          res => {
-            console.log("return of creation : ", res);
-            this.saved = true;
-            this.currentId = res;
-              this.$router.push({name:'konsultantEdition', params:{konsultantId:this.currentId}});
-            },
-          ko => {console.log("Error while saving konsultant...")}
-        );
+        default:
+          this.ratingmsg = "";
+          break;
+      }
     },
-    details(){
-      this.$router.push({name:'konsultantDetail', params:{konsultantId:this.currentId}});
+    addTag: function(newTag) {
+      this.availablecompetences.push(newTag);
+      this.newCompetence.name = newTag;
     },
-    addToList: function(value, list, expectedlength) {   
-        if(Object.keys(value).length >= expectedlength){
-            // console.log(Object.keys(value)); 
-            list.push(value);
-        }    
-    },
-    removeFromList: function(value, list){
-      if(list.indexOf(value) > -1)
-        list.splice(list.indexOf(value), 1);
-    }
+    asyncFind(query) {
+      this.isLoading = true;
+      console.log(query);
+      KlanikApi.GetAllCompStartingBy(query).then(response => {
+        this.availablecompetences  = [];
+        response.data.forEach(element => {
+          this.availablecompetences.push(element.name);
+           this.isLoading = false;
+        });
+      });
     
+    },
+    async save() {
+      if (this.$store.getters.currentUser.role == "SuperUser") {
+        this.konsultant.id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
+          /[018]/g,
+          c =>
+            (
+              c ^
+              (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+            ).toString(16)
+        );
+      } else {
+        this.konsultant.id = this.$store.getters.currentUser.sub;
+      }
+      await KlanikApi.createKonsultant(this.konsultant).then(
+        res => {
+          this.saved = true;
+          this.currentId = res;
+          this.$router.push({
+            name: "konsultantEdition",
+            params: { konsultantId: this.currentId }
+          });
+        },
+        ko => {}
+      );
+    },
+    details() {
+      this.$router.push({
+        name: "konsultantDetail",
+        params: { konsultantId: this.currentId }
+      });
+    },
+    addToList: function(value, list, expectedlength) {
+      if (Object.keys(value).length >= expectedlength) {
+        list.push(value);
+      }
+    },
+    removeFromList: function(value, list) {
+      if (list.indexOf(value) > -1) list.splice(list.indexOf(value), 1);
+    },
+    CreatGuid: () => {
+      return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (
+          c ^
+          (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+        ).toString(16)
+      );
+    }
   },
   watch: {
     competenceList() {
       this.newCompetence = {
-        isRelevant:true,
+        isRelevant: true
       };
     },
     languageList() {
       this.otherLanguage = {
-        isRelevant:true,
+        isRelevant: true
       };
     },
     educationList() {
       this.otherEducation = {
-        isRelevant:true,
+        isRelevant: true
       };
     },
     certificatesList() {
       this.otherCertificate = {
-        isRelevant:true,        
+        isRelevant: true
       };
     },
     professionalExperienceList() {
       this.otherProfessionalExperience = {
-        isRelevant:true,        
+        isRelevant: true,
         accomplishments: [],
         technicalEnvironments: []
       };
       this.otherAccomplishment = {
-        isRelevant:true,
+        isRelevant: true
       };
       this.otherTechnical = {
-        isRelevant:true,
+        isRelevant: true
       };
     },
-    referencesList(){
+    referencesList() {
       this.otherReference = {};
     }
   }
@@ -385,208 +628,230 @@ export default {
 </script>
 
 <style>
-@font-face{
-    font-family:'NewJuneBold';
-    src:url('../assets/fonts/NewJune-Bold.otf');
+.wrapper {
+  display: block;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 5%;
+}
+.gridedtable {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.gdtrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: ghostwhite;
+  grid-column-gap: 5px;
+}
+#cke5prof {
+  margin-top: 5px;
+}
+.ck-editor__editable {
+  min-height: 150px;
+}
+@font-face {
+  font-family: "NewJuneBold";
+  src: url("../assets/fonts/NewJune-Bold.otf");
 }
 
 @font-face {
-  font-family: 'Titillium';
-  src: url('../assets/fonts/TitilliumWeb-Regular.ttf');
+  font-family: "Titillium";
+  src: url("../assets/fonts/TitilliumWeb-Regular.ttf");
 }
 
 @font-face {
-  font-family:'Titillium-title';
-  src: url('../assets/fonts/TitilliumWeb-Bold.ttf')
+  font-family: "Titillium-title";
+  src: url("../assets/fonts/TitilliumWeb-Bold.ttf");
 }
 
-.cv{
-  display:inline-grid;
-  font-family:Titillium;
-  text-align:left;
-  border:1px solid green;
+.cv {
+  display: inline-grid;
+  font-family: Titillium;
+  text-align: left;
+  border: 1px solid green;
 }
 
-.Klanik-titleBar{
-    grid-column:2;
-    grid-row:2;
-    font-family:NewJuneBold;
-    font-size:50px;
-    background-color:#041d36;
-    color:white;
-    text-align:right;
-    padding:5px;
-    margin-right:5px;
-    align-self: end;
-    /* max-height:75px; */
+.Klanik-titleBar {
+  /* grid-column: 2;
+  grid-row: 2; */
+  font-family: NewJuneBold;
+  font-size: 50px;
+  background-color: #041d36;
+  color: white;
+  text-align: right;
+  padding: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  align-self: end;
+  /* max-height:75px; */
+}
+.Klanik-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.box-infos {
+  padding-top: 5px;
+  margin-left: 50px;
+  display: grid;
+  font-family: Titillium-title;
+
+  /*grid-template-columns: 50% 50%;
+  font-family: Titillium-title;
+
+  /* border:1px dashed blue; */
 }
 
-.box-infos{
-    padding-top: 5px;
-    margin-left:50px;
-    display:grid; 
-    grid-template-columns: 50% 50%;
-    font-family:Titillium-title;
-
-    /* border:1px dashed blue; */
+.box-name {
+  display: grid;
+  grid-column-gap: 5px;
+  grid-template-columns: 25% 75%;
+  margin-bottom: 5px;
 }
 
-.box-name{
-    grid-column:1;   
+section {
+  padding: 20px;
 }
 
-.box-summary{
-    grid-column:2;
-}
-
-section{
-  padding:20px;
-}
-
-.section-title{
-  font-family: 'Titillium-Title';
+.section-title {
+  font-family: "Titillium-Title";
   /* padding-left:5px; */
-  display:grid;
+  display: grid;
 
   grid-template-columns: 05% 95%;
-  align-items:center;
-  color:white;
-  font-style:bold;
+  align-items: center;
+  color: white;
+  font-style: bold;
 }
 
-.section-title img{
-  grid-column:1;
+.section-title img {
+  grid-column: 1;
   height: 60px;
-  margin-right:5px;
-  z-index:1;
-  align-self:start;
+  margin-right: 5px;
+  z-index: 1;
+  align-self: start;
 }
 
-.section-title h2{
-  grid-column:2;
-  text-align:center;
-  align-self:end;
-  padding:-5px;
-  padding-left:10px;
-  background-clip:padding-box;
-  background-color:#4d7dad;
+.section-title h2 {
+  grid-column: 2;
+  text-align: center;
+  align-self: end;
+  padding: -5px;
+  padding-left: 10px;
+  background-clip: padding-box;
+  background-color: #4d7dad;
 }
 
-
-.section-content{
-  margin-left:50px;
+.section-content {
+  margin-left: 50px;
 }
 
-
-.row-competences .section-content{
-  display:grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows:auto;
+.row-competences .section-content {
+  display: grid;
+  /* grid-template-columns: 50% 50%; */
+  grid-template-rows: auto;
   grid-row-gap: 15px;
-  grid-column-gap:15px;
-  justify-content:stretch;
-  align-items:left;
+  grid-column-gap: 15px;
+  justify-content: stretch;
+  align-items: left;
 }
 
-.box-competences{
-  grid-column: 1/span 2;
-
-  display:grid;
+.box-competences {
+  /* grid-column: 1 / span 2; display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows:auto;
+  grid-template-rows: auto; */
   justify-self: stretch;
-
+}
+.box-languages-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.box-references {
+  display: grid;
+  grid-template-rows: auto;
 }
 
-.box-references{
-  display:grid;
+.formcomp {
+  /* grid-column: 1; */
+  /* grid-row: 1; */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 0.5em;
+}
+.refes {
+  margin-top: 10px;
+  display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows:auto;
+  grid-gap: 0.5em;
+}
+.form label {
+  grid-column: 1;
+}
+.form input {
+  grid-column: 2;
+  max-width: auto;
 }
 
-.form{
-  grid-column:1;
-  grid-row:1;
-  display:grid;
-  grid-gap:0.5em;
-}
+.existing {
+  grid-column: 1 / span 2;
+  grid-row: 2;
 
-.form label{
-  grid-column:1;
-}
-.form input{
-  grid-column:2;
-  max-width:auto;
-}
-
-.existing{
-  grid-column:1/span 2;
-  grid-row:2;
-
-  display:grid;
-  columns:50% 50%;
+  display: grid;
+  columns: 50% 50%;
 }
 
 td.skill {
-    background-color:ghostwhite;
-    padding: 3px;
-    text-align: center;
+  background-color: ghostwhite;
+  padding: 3px;
+  text-align: center;
 }
 
 .skillTable1 {
-    grid-column:1;    
-    border-collapse: separate;
-    border-spacing: 5px 1px;
-    margin-right: 25px;
-    width: 100%;
-    height:100%;
-    text-align:center;
+  grid-column: 1;
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
 .skillTable2 {
-    grid-column:2;    
-    border-collapse: separate;
-    border-spacing: 5px 1px;
-    margin-right: 25px;
-    width: 100%;
-    height:100%;
-    text-align:center;
+  grid-column: 2;
+  border-collapse: separate;
+  border-spacing: 5px 1px;
+  margin-right: 25px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
-.box-languages{
+.box-languages {
   grid-column: 1;
-  grid-row:2;
+  grid-row: 2;
   justify-self: stretch;
 }
 
-.box-legend{
-  grid-column:2;
-  grid-row:2;
-}
-
-.logo{
-  width:100%;
-  height:100%;
-}
-
-.table-header{
-  background-color:#1d3652;
-  color:white;
-  margin:5px;
-  padding:5px;
+.table-header {
+  background-color: #1d3652;
+  color: white;
+  margin: 5px;
+  padding: 5px;
   font-style: bold;
 }
 
 .table {
   border-collapse: collapse;
-  padding:5px;
-  height:100%;
-  width:100%;
-  text-align:center;
+  padding: 5px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
 }
-.table td, .table th {
+.table td,
+.table th {
   border: 1px solid lightgrey;
-  width:auto;  
+  width: auto;
 }
 .table tr:first-child th {
   border-top: 0;
@@ -600,7 +865,4 @@ td.skill {
 .table tr th:last-child {
   border-right: 0;
 }
-
 </style>
-
-
