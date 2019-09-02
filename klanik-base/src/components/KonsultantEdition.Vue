@@ -24,6 +24,15 @@
                 type="month"
                 class="form-control"
               />
+               <label>Mobility</label>
+              <multiselect
+                v-model="konsultant.mobilites"
+                :options="mobilityList"
+                :multiple="true"
+                placeholder="Type to search"
+                track-by="id"
+                label="name"
+              ></multiselect>
             </div>
           </div>
         </div>
@@ -370,6 +379,7 @@ export default {
         placeholder: "Summary"
       },
       isLoading: false,
+        mobilityList :[],
       availablecompetences: [],
       konsultant: {
         competences: [],
@@ -430,6 +440,11 @@ export default {
       c.data.forEach(element => {
         this.availablecompetences.push(element.name);
       });
+    });
+    KlanikApi.GetAllBu().then(bu=>{
+       bu.data.forEach(b=>{
+         this.mobilityList.push({id:b.id,name:b.name})
+       })
     });
   },
   async created() {
@@ -630,7 +645,7 @@ export default {
 </script>
 
 
-<style>
+<style >
 .wrapper {
   display: block;
   margin-left: 10%;

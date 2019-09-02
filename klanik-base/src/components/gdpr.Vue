@@ -316,7 +316,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 .mainBlock {
   margin-top: 15px;
   display: grid;

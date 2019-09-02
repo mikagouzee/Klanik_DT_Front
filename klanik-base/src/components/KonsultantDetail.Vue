@@ -23,11 +23,13 @@
           <div class="box-name">{{konsultant.name}} {{konsultant.surname}}</div>
 
           <div class="box-summary">
-            {{konsultant.function}}
-            <br />
-            {{mainCompetence}}
-            <br />
-            Available starting {{konsultant.availability.substring(0,10)}}
+            <span>{{konsultant.function}}</span>
+            <span>{{mainCompetence}}</span>
+            <span>Available starting {{konsultant.availability.substring(0,10)}}</span>
+          </div>
+          <div class="box-summary">
+            <span>Mobility :</span>
+            <span v-for="mob in konsultant.mobilites" :key="mob.name">{{mob.name}} </span>
           </div>
         </div>
 
@@ -45,7 +47,7 @@
               <tr v-for="thiscomp in firstHalfSkill" :key="thiscomp.name">
                 <td class="skill">{{thiscomp.name}}</td>
                 <td class="skill">
-                  <span  v-for="idx in thiscomp.rating" :key="idx">&#9733;</span>
+                  <span v-for="idx in thiscomp.rating" :key="idx">&#9733;</span>
                 </td>
               </tr>
             </table>
@@ -234,7 +236,7 @@ export default {
           console.log("Detail using store konsultant");
           return this.$store.getters.selectedKonsultant;
         } else {
-          var fetchedkonsultant = await klanikApi.getKonsultantById(id);
+          var fetchedkonsultant = await this.$GetConsultantById(id);
 
           if (fetchedkonsultant.id == null) {
             fetchedkonsultant = {
@@ -325,7 +327,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 iframe {
   width: 1200px;
   height: 1000px !important;

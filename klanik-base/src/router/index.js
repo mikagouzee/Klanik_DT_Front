@@ -2,7 +2,6 @@ import Vue from "vue";
 import Router from "vue-router";
 import { Role } from "@/tools/Roles";
 import Login from "@/components/Login";
-import LoginMessage from "@/components/LoginMessage";
 import Resetpassword from "@/components/ResetPassword";
 import Forgot from "@/components/ForgotPassword";
 

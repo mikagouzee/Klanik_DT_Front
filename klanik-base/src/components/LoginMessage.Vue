@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
     .loginMessage{
         color:red;
         padding:50px;

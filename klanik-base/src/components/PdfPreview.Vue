@@ -110,7 +110,7 @@ export default {
 
 
 
-<style>
+<style >
 .container {
   display: grid;
 }

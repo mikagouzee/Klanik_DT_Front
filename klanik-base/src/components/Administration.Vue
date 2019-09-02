@@ -1,20 +1,25 @@
 <template>
   <div class="admin-box">
-    <p>Cette section vous permet de nommer un recruteur en tant qu'administrateur de l'application.</p>
-    <section class="content">
-      <multiselect track-by="id" label="fullName" v-model="selectedUser" :options="users"></multiselect>
-      <multiselect v-model="selectedRole" :options="roles"></multiselect>
-      <md-button class="buttonAdd md-raised" @click="setRoleToUser">Set role</md-button>
-    </section>
+    <b-tabs content-class="mt-3">
+      <b-tab title="Users" active>
+        <Users></Users>
+      </b-tab>
+      <b-tab title="Competences">
+        <Competences from="Admin"></Competences>
+      </b-tab>
+      <b-tab title="Business units">
+        <Business-unit></Business-unit>
+      </b-tab>
+    </b-tabs>
   </div>
 </template>
 
 <script>
 import authenticationService from "@/services/AuthenticationService";
-import Multiselect from "vue-multiselect";
+
 export default {
   name: "administration",
-  components: {  Multiselect },
+  components: {  },
   data() {
     return {
       users: [],
@@ -24,8 +29,8 @@ export default {
     };
   },
   async created() {
-    await this.getAllUsers();
-    await this.getAllRoles();
+    // await this.getAllUsers();
+    // await this.getAllRoles();
   },
   computed: {
     recruiterList() {
@@ -54,10 +59,11 @@ export default {
     },
 
     async setRoleToUser() {
-      authenticationService.setRoleToUser(
-        this.selectedUser.id,
-        this.selectedRole
-      ).then(()=>{this.$toastr('success', 'Role updated', '')});
+      authenticationService
+        .setRoleToUser(this.selectedUser.id, this.selectedRole)
+        .then(() => {
+          this.$toastr("success", "Role updated", "");
+        });
     }
   }
 };

@@ -1,9 +1,6 @@
 <template>
   <div class="container">
     <h2>Konsultants of Klanik</h2>
-
-    <!-- <b-button @click="log" variant="light">Log</b-button>
-    <b-button @click="logCurrentUser" variant="light">Log User</b-button>-->
     <b-button variant="light" @click="AddKonsultantToRecruiter">Update my Konsultant</b-button>
     <b-button variant="outline-primary" @click="AddKonsultant">Add a Konsultant</b-button>
 
@@ -59,7 +56,6 @@
 </template>
 
 <script>
-import KlanikApi from "@/services/KlanikService";
 import { VueGoodTable } from "vue-good-table";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -125,12 +121,6 @@ export default {
     }
   },
   methods: {
-    log() {
-      console.log(this.currentUser);
-    },
-    logCurrentUser() {
-      console.log(this.$store.getters.currentUser);
-    },
     async removeKonsultant(row) {
       this.currentUser.konsultants.splice(
         this.currentUser.konsultants.indexOf(row.id),
@@ -143,12 +133,10 @@ export default {
       this.loading = true;
       let that = this;
       try {
-        this.konsultants = await KlanikApi.getAllKonsultants();
-        console.log(this.konsultants);
-        this.portfolio = await KlanikApi.getOwnedKonsultant(
+        this.konsultants = await this.$GetAllConsultant();;
+        this.portfolio = await this.$getOwnedKonsultant(
           this.currentUser.id
         ).then(r => {
-          console.log(r);
           r.data.portfolio.forEach(p => {
             this.currentUser.konsultants.push(p.id);
           });
@@ -167,7 +155,6 @@ export default {
       }
     },
     seeDetails(params) {
-      console.log(params);
       this.$router.push({
         name: "konsultantDetail",
         params: {
@@ -176,7 +163,7 @@ export default {
       });
     },
     async AddKonsultantToRecruiter() {
-      return await KlanikApi.UpdateRecruiterPortfolio(this.currentUser).then(
+      return await this.$UpdateRecruiterPortfolio(this.currentUser).then(
         r => {
           this.showSnackbar = true;
           if (r.length > 0) {
@@ -195,7 +182,6 @@ export default {
       this.$router.push({ path: "/konsultant/new" });
     },
     toggleSelectRow(params) {
-      console.log(params.selected);
       this.pristine = "warning";
       this.disabledButton = false;
       if (params.selected) {
@@ -211,14 +197,13 @@ export default {
     },
     selectionChanged(params) {}
   },
-
   components: {
     VueGoodTable
   }
 };
 </script>
 
-<style>
+<style >
 .container {
   margin-bottom: 25px;
 }

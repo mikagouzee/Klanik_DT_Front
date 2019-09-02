@@ -50,7 +50,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
     forgot-box{
         padding:15px;
     }

@@ -25,6 +25,8 @@ import StarRating from "vue-star-rating";
 import VueResource from "vue-resource";
 
 import VueInputMask from "vue-inputmask";
+import KonsultantPlugin from "./plugins/api/Consultant.plugin";
+import RecruteurPlugin from "./plugins/api/Recruteur.plugin";
 
 Vue.use(VueMaterial);
 Vue.use(VueToastr);
@@ -33,18 +35,35 @@ Vue.use(VueResource);
 Vue.use(VueGoodTablePlugin);
 Vue.use(CKEditor);
 Vue.use(VueInputMask.default);
-
+Vue.use(KonsultantPlugin)
+Vue.use(RecruteurPlugin);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
+import Competences from '@/components/Admin/Competences'
+import BusinessUnit from '@/components/Admin/BusinessUnit'
+import Users from '@/components/Admin/Users';
+import ConsultantCompetences from '@/components/Consultant/Competences'
+import { VueGoodTable } from "vue-good-table";
+
+Vue.component("vue-good-table", VueGoodTable)
 Vue.component("star-rating", StarRating);
+Vue.component("Competences",Competences);
+Vue.component("Business-unit", BusinessUnit);
+Vue.component("Users", Users);
+Vue.component("consultant-competences",ConsultantCompetences)
 new Vue({
   el: "#app",
   router,
   store,
 
   components: {
-    App
+    App,
+    VueGoodTable,
+    Competences,
+    BusinessUnit,
+    Users,
+    ConsultantCompetences
   },
 
   template: "<App/>"

@@ -1,7 +1,7 @@
 <template>
 <div id="app">
   <header>
-    <b-navbar type="light" variant="light" toggleable="lg">
+    <b-navbar type="light" toggleable="lg">
       <b-navbar-brand to="/">Klanik</b-navbar-brand>
       <b-navbar-toggle target="nav-menu-collapse"></b-navbar-toggle>
       <b-collapse id="nav-menu-collapse" is-nav>

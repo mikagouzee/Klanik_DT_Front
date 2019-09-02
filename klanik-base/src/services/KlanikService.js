@@ -17,7 +17,6 @@ export default {
   },
   getKonsultantById(id) {
     console.log("Service : Get A Konsultant by Id");
-    //console.log("Current user has role ", store.getters.currentUser.role);
     return client()
       .get("/konsultant/" + id, { data: "" }, { headers: authHeader() })
       .then(res => res.data)
@@ -35,6 +34,7 @@ export default {
       );
   },
   getCvAsWord(id) {
+    console.log(id);
     let wordKonsultant  = store.getters.selectedKonsultant;
     return client()
       .get("/Konsultant/Word/" + id, { responseType: "blob" })
@@ -42,7 +42,7 @@ export default {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `${wordKonsultant.name}_${wordKonsultant.surname}.docx`); //or any other extension
+        link.setAttribute("download", `${wordKonsultant.name}_${wordKonsultant.surname}.docx`); 
         document.body.appendChild(link);
         link.click();
       });
@@ -69,18 +69,7 @@ export default {
       .then(res => res.data)
       .catch(err => console.log("Error in Konsultants service Create : ", err));
   },
-  async getOwnedKonsultant(id){
-    return await client().get(`/recruiter/Portfolio/${id}`);
-  },
-  async UpdateRecruiterPortfolio(recruiter) {
-
-    client().defaults.headers.common["Authorization"] = authHeader();
-
-    return await client()
-      .post("/recruiter/UpdatePortfolio", recruiter)
-      .then(res => res.data)
-      .catch(err => console.log(err));
-  },
+  
   async GetAllComp(){
     return await client().get('Comptences');
   },
@@ -88,5 +77,23 @@ export default {
     console.log(query.length);
     query.length == 0 ? query = 'a' : query = query;
     return await client().get(`Comptences/${query}`)
+  },
+  async AddCompetences(comp){
+    return await client().post('Comptences/',{comp});
+  },
+  async RemoveCompetence(comp){
+    return await client().delete(`Comptences/${comp.Id}`)
+  },
+  async GetAllBu(){
+    return await client().get("Bu/");
+  },
+  async AddBu(bu){
+    return await client().post(`Bu/`,bu);
+  },
+  async RemoveBu(bu){
+    return await client().delete(`Bu/${bu.id}`)
+  },
+  async GetAllCountries(){
+    return await client().get(`country/`)
   }
 };
