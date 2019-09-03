@@ -75,7 +75,7 @@ export default {
   },
   async GetAllCompStartingBy(query){
     console.log(query.length);
-    query.length == 0 ? query = 'a' : query = query;
+    query.length == 0 ? query = '' : query = query;
     return await client().get(`Comptences/${query}`)
   },
   async AddCompetences(comp){

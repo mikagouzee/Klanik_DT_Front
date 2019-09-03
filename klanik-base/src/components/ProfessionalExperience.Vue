@@ -15,9 +15,8 @@
         v-for="ac in professionalExperience.accomplishments.filter(x => !x.isDeleted)"
         :key="ac.id"
       >
-        {{ac.title}}
-        <!-- Include :
-        <input type="checkbox" v-model="ac.isRelevant" /> -->
+        <span v-html="ac.title"></span>
+     
         <button @click="removeFromList(ac, professionalExperience.accomplishments)">X</button>
       </li>
     </ul>

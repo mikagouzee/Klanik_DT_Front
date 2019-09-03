@@ -151,7 +151,10 @@ export default {
       // await this.$DeleteConsultant(row.row.id);
     },
     async confirmDelete() {
-      await this.$DeleteConsultant(this.toDelete.id);
+      await authenticationService.deleteUser(this.toDelete.id).then(()=>{
+           this.$bvModal.hide("deleteModal");
+      });
+      
     },
     async cancelDelete() {
       this.toDelete = {};

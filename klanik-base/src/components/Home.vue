@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Welcome to Klanik , dear {{user.given_name}}</h1>
+    <h1>Welcome to Klanik </h1>
     <p>
       Cette page web a pour but de vous permettre d'enregistrer les informations liées à votre CV,
       afin de générer le Dossier Technique (DT) utilisé par nos collègues pour vous trouver la mission de vos rêves.

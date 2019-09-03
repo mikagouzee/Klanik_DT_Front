@@ -21,7 +21,6 @@ export default {
         );
     };
     Vue.prototype.$DeleteConsultant = async guid => {
-      console.log(guid);
       return client()
         .delete(`/konsultant/${guid}`, {
           headers: {

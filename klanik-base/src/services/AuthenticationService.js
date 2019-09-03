@@ -140,5 +140,7 @@ export default {
       .put("/api/Account/OptIn/", { id: id, optIn: optIn })
       .then(res => console.log(res))
       .catch(err => console.log(err));
-  }
+  },
+  deleteUser(id){
+    return  client().delete(`/api/Account/${id}`).then(()=>{})  }
 };
