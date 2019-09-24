@@ -24,7 +24,7 @@
                 type="month"
                 class="form-control"
               />
-               <label>Mobility</label>
+              <label>Mobility</label>
               <multiselect
                 v-model="konsultant.mobilites"
                 :options="mobilityList"
@@ -182,7 +182,11 @@
         <div class="section-content">
           <div class="form">
             <label>New education :</label>
-            <input v-model="otherEducation.name" placeholder="Name" />
+            <input v-model="otherEducation.Finality" placeholder="e.g. Master in computer science" />@
+            <input
+              v-model="otherEducation.Diploma"
+              placeholder="e.g. Université libre de Bruxelles "
+            />
             <input v-model="otherEducation.startDate" placeholder="Starting date" type="month" />
             <input v-model="otherEducation.endDate" placeholder="End date" type="month" />
             <button @click="addToList(otherEducation, konsultant.educations, 3)">Add</button>
@@ -379,7 +383,7 @@ export default {
         placeholder: "Summary"
       },
       isLoading: false,
-        mobilityList :[],
+      mobilityList: [],
       availablecompetences: [],
       konsultant: {
         competences: [],
@@ -441,10 +445,10 @@ export default {
         this.availablecompetences.push(element.name);
       });
     });
-    KlanikApi.GetAllBu().then(bu=>{
-       bu.data.forEach(b=>{
-         this.mobilityList.push({id:b.id,name:b.name})
-       })
+    KlanikApi.GetAllBu().then(bu => {
+      bu.data.forEach(b => {
+        this.mobilityList.push({ id: b.id, name: b.name });
+      });
     });
   },
   async created() {
@@ -529,20 +533,19 @@ export default {
           break;
       }
     },
-     addTag: function(newTag) {
+    addTag: function(newTag) {
       this.availablecompetences.push(newTag);
       this.newCompetence.name = newTag;
     },
     asyncFind(query) {
       this.isLoading = true;
       KlanikApi.GetAllCompStartingBy(query).then(response => {
-        this.availablecompetences  = [];
+        this.availablecompetences = [];
         response.data.forEach(element => {
           this.availablecompetences.push(element.name);
-           this.isLoading = false;
+          this.isLoading = false;
         });
       });
-    
     },
     async save() {
       this.$store.dispatch("SelectKonsultant", this.konsultant);
@@ -566,6 +569,9 @@ export default {
     },
 
     addToList: function(value, list, expectedlength) {
+        if(list==this.konsultant.educations){
+        value.name = `${value.Finality}@${value.Diploma}`; 
+      }
       if (Object.keys(value).length >= expectedlength) {
         list.push(value);
       }

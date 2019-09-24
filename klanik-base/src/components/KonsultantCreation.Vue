@@ -200,13 +200,12 @@
               v-model="otherEducation.startDate"
               placeholder="Starting date"
               type="month"
-              pattern="[0-9]{4}"
+             
             />
             <input
               v-model="otherEducation.endDate"
               placeholder="End date"
               type="month"
-              pattern="[0-9]{4}"
             />
             <md-button
               class="md-raised"
@@ -233,7 +232,7 @@
               <!-- <md-table-cell>
                 Include :
                 <input type="checkbox" v-model="edu.isRelevant" />
-              </md-table-cell> -->
+              </md-table-cell>-->
               <md-table-cell>
                 <md-button
                   class="md-icon-button"
@@ -280,18 +279,18 @@
             >
               <md-table-cell>
                 <input v-model="cert.name" /> obtained on
-                <input :value="cert.obtension | toDate" />
+                <input :value="cert.startDate " />
               </md-table-cell>
 
-              <md-table-cell>
+              <!-- <md-table-cell>
                 Valid until
                 <input :value="cert.endOfValidity | toDate" />
-              </md-table-cell>
+              </md-table-cell>-->
 
               <!-- <md-table-cell>
                 Include
                 <input type="checkbox" v-model="cert.isRelevant" />
-              </md-table-cell> -->
+              </md-table-cell>-->
 
               <md-table-cell>
                 <md-button
@@ -397,7 +396,7 @@ import KlanikApi from "@/services/KlanikService";
 import Multiselect from "vue-multiselect";
 
 import professionalExperience from "./ProfessionalExperience";
-import { lngFilter } from "../tools/filters";
+import { lngFilter, dateFilter } from "../tools/filters";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default {
@@ -407,6 +406,7 @@ export default {
     Multiselect
   },
   filters: {
+    toDate :dateFilter,
     lngFilter: lngFilter
   },
   data() {
@@ -592,12 +592,17 @@ export default {
       if(list==this.konsultant.educations){
         value.name = `${value.Finality}@${value.Diploma}`; 
       }
+      if(list == this.konsultant.professionalExperiences){
+      }
       if (Object.keys(value).length >= expectedlength) {
         list.push(value);
       }
     },
     removeFromList: function(value, list) {
-      if (list.indexOf(value) > -1) list.splice(list.indexOf(value), 1);
+      if (list.indexOf(value) > -1)   this.markAsDeleted(value);;
+    },
+      markAsDeleted: function(value) {
+      value.isDeleted = true;
     },
     CreatGuid: () => {
       return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>

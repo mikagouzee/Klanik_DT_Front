@@ -18,8 +18,8 @@
         type="password"
         placeholder="Confirm your password"
       />
-      <label>Code*</label>
-      <input type="text"  class="form-control" v-model="sixgram" pattern="[A-Za-z]{3}-[A-Za-z]{3}-[A-Za-z]{3}" v-mask="'AAA-AAA-AAA'"/>
+      <!-- <label>Code*</label>
+      <input type="text"  class="form-control" v-model="sixgram" pattern="[A-Za-z]{3}-[A-Za-z]{3}-[A-Za-z]{3}" v-mask="'AAA-AAA-AAA'"/> -->
       <span
         v-if="email.length && confirmPassword.length && !isPasswordCorrectlyConfirmed"
         style="color:red;"

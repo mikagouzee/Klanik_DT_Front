@@ -40,10 +40,10 @@ Vue.use(RecruteurPlugin);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
-import Competences from '@/components/Admin/Competences'
-import BusinessUnit from '@/components/Admin/BusinessUnit'
-import Users from '@/components/Admin/Users';
-import ConsultantCompetences from '@/components/Consultant/Competences'
+import Competences from './components/Admin/Competences'
+import BusinessUnit from './components/Admin/BusinessUnit'
+import Users from './components/Admin/Users';
+import ConsultantCompetences from './components/Consultant/Competences'
 import { VueGoodTable } from "vue-good-table";
 
 Vue.component("vue-good-table", VueGoodTable)

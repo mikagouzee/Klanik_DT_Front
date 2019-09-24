@@ -83,12 +83,13 @@ export default {
   },
   methods: {
     AddToList: function() {
+      const nbu = new Object();
       KlanikApi.AddBu(this.BusinessUnit).then(bu => {
-        this.rows.push(this.BusinessUnit);
+        this.rows.push(bu.data);
       });
+      
     },
     Remove: function(param) {
-      console.log(param);
       KlanikApi.RemoveBu(param).then(bu => {
         this.rows = [];
         bu.data.forEach(b => {

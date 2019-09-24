@@ -2,7 +2,7 @@
   <div class="PexContainer">
     <h4>Role : {{professionalExperience.position}}</h4>
     <!-- <h4>Role : {{professionalExperience.position}}</h4>Include :
-    <input type="checkbox" v-model="professionalExperience.isRelevant" /> -->
+    <input type="checkbox" v-model="professionalExperience.isRelevant" />-->
     <p>From {{professionalExperience.startDate.substring(0,10)}} till {{professionalExperience.endDate.substring(0,10)}} : {{professionalExperience.customer}}</p>
     <h5>Summary</h5>
     <span v-html="professionalExperience.summary"></span>
@@ -16,7 +16,7 @@
         :key="ac.id"
       >
         <span v-html="ac.title"></span>
-     
+
         <button @click="removeFromList(ac, professionalExperience.accomplishments)">X</button>
       </li>
     </ul>
@@ -34,9 +34,9 @@
         v-for="te in professionalExperience.technicalEnvironments.filter(x => !x.isDeleted)"
         :key="te.id"
       >
-        {{te.name}}
+        <span v-html="te.name"></span>
         <!-- Include :
-        <input type="checkbox" v-model="te.isRelevant" /> -->
+        <input type="checkbox" v-model="te.isRelevant" />-->
         <button @click="removeFromList(te, professionalExperience.technicalEnvironments)">X</button>
       </li>
     </ul>
@@ -75,9 +75,35 @@ export default {
   },
   methods: {
     addToList(value, list) {
-      console.log(value);
       
-      list.push(value);
+      if (value.title) {
+        value.title.split("<li>").forEach(element => {
+          var acpl = element.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/gm, "");
+          if (acpl.length > 0) {
+            let o = {
+              id: "",
+              isRelevant: true,
+              isDeleted: false,
+              title: acpl
+            };
+            list.push(o);
+          }
+        });
+      }
+      else {
+          value.name.split("<li>").forEach(element => {
+          var acpl = element.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/gm, "");
+          if (acpl.length > 0) {
+            let o = {
+              id: "",
+              isRelevant: true,
+              isDeleted: false,
+              name: acpl
+            };
+            list.push(o);
+          }
+        });
+      }
     },
     removeFromList: function(value, list) {
       if (list.indexOf(value) > -1) {

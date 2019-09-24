@@ -1,10 +1,13 @@
 <template>
   <div class="hello">
-    <h1>Welcome to Klanik </h1>
-    <p>
-      Cette page web a pour but de vous permettre d'enregistrer les informations liées à votre CV,
-      afin de générer le Dossier Technique (DT) utilisé par nos collègues pour vous trouver la mission de vos rêves.
-      Rassurez vous, nous ne modifions pas vos informations, nous les mettons simplement aux normes de notre charte graphique ;-)
+    <h1>Welcome to Klanik</h1>
+      <span>
+        Cette page web a pour but de vous permettre d'enregistrer les informations liées à votre CV,
+        afin de générer le Dossier Technique (DT) utilisé par nos collègues pour vous trouver la mission de vos rêves.
+        Rassurez vous, nous ne modifions pas vos informations, nous les mettons simplement aux normes de notre charte graphique ;-)
+      </span>
+<span></span>
+      <img src="../assets/pictos/Klanik.gif" />
       <b-modal
         title="GDPR Consent form for candidates for the processing of Personal Data"
         size="xl"
@@ -21,7 +24,6 @@
           <b-button size="sm" variant="outline-secondary" @click="SetOptIn()">Accept</b-button>
         </template>
       </b-modal>
-    </p>
   </div>
 </template>
 
@@ -35,7 +37,7 @@ export default {
   },
   data() {
     return {
-         OptedIn: this.$store.getters.GetOptIn
+      OptedIn: this.$store.getters.GetOptIn
     };
   },
   computed: {
@@ -67,7 +69,7 @@ export default {
         )
         .then(() => {
           this.$toastr("success", "GDPR updated", "");
-           this.$bvModal.hide("gdprmodal");
+          this.$bvModal.hide("gdprmodal");
         });
     }
   }
@@ -101,5 +103,12 @@ a {
 
 .hello {
   text-align: center;
+  display: grid;
+  grid-template-columns: 1fr;
 }
+IMG {
+    display: block;
+    margin-left: auto;
+    margin-right: auto ;
+    }
 </style>

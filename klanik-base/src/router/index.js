@@ -1,18 +1,18 @@
 import Vue from "vue";
 import Router from "vue-router";
-import { Role } from "@/tools/Roles";
-import Login from "@/components/Login";
-import Resetpassword from "@/components/ResetPassword";
-import Forgot from "@/components/ForgotPassword";
+import { Role } from "../tools/Roles";
+import Login from "../components/Login";
+import Resetpassword from "../components/ResetPassword";
+import Forgot from "../components/ForgotPassword";
 
-import Home from "@/components/Home";
-import KonsultantList from "@/components/KonsultantList";
-import KonsultantDetail from "@/components/KonsultantDetail";
-import KonsultantCreation from "@/components/KonsultantCreation";
-import KonsultantEdition from "@/components/KonsultantEdition";
-import Register from "@/components/Register";
-import Administration from "@/components/Administration";
-import GDPR from "@/components/gdpr";
+import Home from "../components/Home";
+import KonsultantList from "../components/KonsultantList";
+import KonsultantDetail from "../components/KonsultantDetail";
+import KonsultantCreation from "../components/KonsultantCreation";
+import KonsultantEdition from "../components/KonsultantEdition";
+import Register from "../components/Register";
+import Administration from "../components/Administration";
+import GDPR from "../components/gdpr";
 
 import store from "../store/store";
 

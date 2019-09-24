@@ -160,7 +160,8 @@
                 <li
                   v-for="(accomp, index) in prof.accomplishments.filter(a => a.isRelevant)"
                   :key="index"
-                >--{{accomp.title}}</li>
+                >
+                <span v-html="accomp.title"></span></li>
               </ul>
 
               <h5>Technical Environment :</h5>
@@ -168,7 +169,7 @@
                 <li
                   v-for="(tech, index) in prof.technicalEnvironments.filter(t => t.isRelevant)"
                   :key="index"
-                >--{{tech.name}} {{tech.option}}</li>
+                ><span v-html="tech.name"></span> </li>
               </ul>
             </li>
           </ul>
@@ -218,8 +219,6 @@ export default {
     );
 
     this.$store.dispatch("SelectKonsultant", this.konsultant);
-    // console.log("Konsultant Detail : ");
-    // console.log(JSON.stringify(this.konsultant, null, 4));
   },
   methods: {
     log() {
@@ -233,8 +232,22 @@ export default {
           Object.keys(this.$store.getters.selectedKonsultant).length &&
           this.$store.getters.selectedKonsultant.id == id
         ) {
-          console.log("Detail using store konsultant");
-          return this.$store.getters.selectedKonsultant;
+                    var fetchedkonsultant = await this.$GetConsultantById(id);
+
+          if (fetchedkonsultant.id == null) {
+            fetchedkonsultant = {
+              id: id,
+              competences: [],
+              languages: [],
+              educations: [],
+              certificates: [],
+              professionalExperiences: [],
+              professionalReferences: []
+            };
+          }
+
+          return fetchedkonsultant;
+          // return this.$store.getters.selectedKonsultant;
         } else {
           var fetchedkonsultant = await this.$GetConsultantById(id);
 
@@ -265,8 +278,8 @@ export default {
       try {
         var newId = await klanikApi.createKonsultant(this.konsultant);
         return await klanikApi.getCvAsPdf(newId).then(r => {
+          console.log(r);
           this.cvPdf = "data:application/pdf;base64," + r;
-          // console.log(r);
         });
       } finally {
         this.ready = true;

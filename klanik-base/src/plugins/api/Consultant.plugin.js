@@ -9,7 +9,7 @@ export default {
         const res = await client().get("/konsultant/");
         return res.data;
       } catch (err) {
-        return console.log("Error in Konsultants Service : ", err);
+      
       }
     };
     Vue.prototype.$GetConsultantById = async guid => {
